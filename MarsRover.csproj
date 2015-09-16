@@ -60,8 +60,21 @@
     <Analyzer Include="packages\StyleCop.Analyzers.1.0.0-beta011\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EastFacingRover.cs" />
+    <Compile Include="EastFacingRoverTests.cs" />
+    <Compile Include="IRover.cs" />
+    <Compile Include="Map.cs" />
+    <Compile Include="MapTests.cs" />
     <Compile Include="MarsRover.cs" />
-    <Compile Include="MarsRoverTests.cs" />
+    <Compile Include="NorthFacingRover.cs" />
+    <Compile Include="NorthFacingRoverTests.cs" />
+    <Compile Include="Rover.cs" />
+    <Compile Include="RoverBase.cs" />
+    <Compile Include="RoverTests.cs" />
+    <Compile Include="SouthFacingRover.cs" />
+    <Compile Include="SouthFacingRoverTests.cs" />
+    <Compile Include="WestFacingRover.cs" />
+    <Compile Include="WestFacingRoverTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

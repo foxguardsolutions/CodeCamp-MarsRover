@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MarsRover
 {
-    public delegate IRover DoAction();
-
     public enum Movements
     {
         FORWARD = 'F',
@@ -14,20 +13,11 @@ namespace MarsRover
 
     public interface IRover
     {
-        int X
-        {
-            get; set;
-        }
+        int X { get; set; }
 
-        int Y
-        {
-            get; set;
-        }
+        int Y { get; set; }
 
-        Dictionary<Movements, DoAction> MyActions
-        {
-            get; set;
-        }
+        Dictionary<Movements, Func<IRover>> MyActions { get; set; }
 
         IRover Backward();
         IRover Forward();

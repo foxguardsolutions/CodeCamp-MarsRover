@@ -4,15 +4,9 @@ namespace MarsRover
 {
     public class Rover
     {
-        private IRover InternalRover
-        {
-            get; set;
-        }
+        private IRover InternalRover { get; set; }
 
-        public Map Planet
-        {
-            get; set;
-        }
+        public Map Planet { get; set; }
 
         public int X
         {
@@ -38,7 +32,7 @@ namespace MarsRover
             }
         }
 
-        public Rover (IRover rover, Map map)
+        public Rover(IRover rover, Map map)
         {
             InternalRover = rover;
             Planet = map;

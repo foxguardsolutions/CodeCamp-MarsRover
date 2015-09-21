@@ -5,20 +5,11 @@ namespace MarsRover
 {
     public class Map
     {
-        public int MapWidth
-        {
-            get; set;
-        }
+        public int MapWidth { get; set; }
 
-        public int MapHeight
-        {
-            get; set;
-        }
+        public int MapHeight { get; set; }
 
-        public List<int[]> Obstacles
-        {
-            get; set;
-        }
+        public List<int[]> Obstacles { get; set; }
 
         public Map(int width = 10, int height = 10)
         {

@@ -4,7 +4,7 @@ namespace MarsRover
 {
     public enum Movement
     {
-        FORWARD, BACKWARD, LEFT, RIGHT
+        FORWARD = 'F', BACKWARD = 'B', LEFT = 'L', RIGHT = 'R'
     }
 
     public interface IVehicle

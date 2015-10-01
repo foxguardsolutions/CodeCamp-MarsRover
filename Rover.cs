@@ -9,15 +9,14 @@ namespace MarsRover
         private const int RIGHT_ANGLE = 90;
 
         private Matrix translationMatrix = new Matrix();
-        private Dictionary<Grid.Direction, Action> directionActions = new Dictionary<Grid.Direction, Action>();
-        private Dictionary<Movement, Action> movementActions = new Dictionary<Movement, Action>();
-        private Dictionary<Movement, char> movementDictionary;
+        private Dictionary<char, Action> directionActions = new Dictionary<char, Action>();
+        private Dictionary<char, Action> movementActions = new Dictionary<char, Action>();
 
         public Grid World { get;  set; }
         public GridCell CurrentLocation { get; set; }
-        public Grid.Direction Orientation { get; set; }
+        public char Orientation { get; set; }
 
-        public Rover(int x, int y, Grid.Direction dir)
+        public Rover(int x, int y, char dir)
         {
             Orientation = dir;
 
@@ -33,18 +32,18 @@ namespace MarsRover
 
         private void GenerateDirectionActions()
         {
-            directionActions.Add(Grid.Direction.NORTH, TurnNorth);
-            directionActions.Add(Grid.Direction.EAST, TurnEast);
-            directionActions.Add(Grid.Direction.SOUTH, TurnSouth);
-            directionActions.Add(Grid.Direction.WEST, TurnWest);
+            directionActions.Add('N', TurnNorth);
+            directionActions.Add('E', TurnEast);
+            directionActions.Add('S', TurnSouth);
+            directionActions.Add('W', TurnWest);
         }
 
         private void GenerateMovementActions()
         {
-            movementActions.Add(Movement.FORWARD, MoveForward);
-            movementActions.Add(Movement.BACKWARD, MoveBackward);
-            movementActions.Add(Movement.LEFT, TurnNorth);
-            movementActions.Add(Movement.RIGHT, TurnSouth);
+            movementActions.Add('F', MoveForward);
+            movementActions.Add('B', MoveBackward);
+            movementActions.Add('L', TurnNorth);
+            movementActions.Add('R', TurnSouth);
         }
 
         private void TurnNorth()
@@ -77,7 +76,7 @@ namespace MarsRover
             translationMatrix.Translate(-1, 0);
         }
 
-        public bool Move(Movement movement)
+        public bool Move(char movement)
         {
             Console.WriteLine(movement);
 

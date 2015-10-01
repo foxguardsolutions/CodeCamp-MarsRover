@@ -8,7 +8,7 @@ namespace MarsRover
         {
             int xLoc = AskForXLocation();
             int yLoc = AskForYLocation();
-            Grid.Direction direction = AskForDirection();
+            char direction = AskForDirection();
             string movements = AskForMovements();
 
             Rover rover = new Rover(xLoc, yLoc, direction);
@@ -17,7 +17,7 @@ namespace MarsRover
 
             foreach (char movement in movements)
             {
-                if (!rover.Move((Movement)movement))
+                if (!rover.Move(movement))
                 {
                     break;
                 }
@@ -44,11 +44,11 @@ namespace MarsRover
             return yLoc;
         }
 
-        private static Grid.Direction AskForDirection()
+        private static char AskForDirection()
         {
-            Console.WriteLine("Enter your starting direction (0, 90, 180, 270):");
+            Console.WriteLine("Enter your starting direction (N, E, S, W):");
 
-            Grid.Direction direction = (Grid.Direction)int.Parse(Console.ReadLine());
+            char direction = Convert.ToChar(Console.ReadLine());
 
             return direction;
         }

@@ -7,11 +7,11 @@ namespace MarsRover
     [TestFixture]
     public class RoverTest
     {
-        [TestCase("FFLFF", Grid.Direction.EAST, 5, 6, 7, 5)]
-        [TestCase("FFFFFFFFFFFFFFFFFF", Grid.Direction.NORTH, 9, 5, 9, 7)]
-        [TestCase("BBBRFF", Grid.Direction.SOUTH, 3, 1, 2, 8)]
-        [TestCase("FLFFFFLFRFFRFFRFFRF", Grid.Direction.WEST, 2, 3, 1, 7)]
-        public void TestMove(string movements, Grid.Direction direction, int startX, int startY, int finalX, int finalY)
+        [TestCase("FFLFF", 'E', 5, 6, 7, 5)]
+        [TestCase("FFFFFFFFFFFFFFFFFF", 'N', 9, 5, 9, 7)]
+        [TestCase("BBBRFF", 'S', 3, 1, 2, 8)]
+        [TestCase("FLFFFFLFRFFRFFRFFRF", 'W', 2, 3, 1, 7)]
+        public void TestMove(string movements, char direction, int startX, int startY, int finalX, int finalY)
         {
             Grid world = new Grid(10, 10);
 
@@ -27,7 +27,7 @@ namespace MarsRover
 
             foreach (char movement in movements)
             {
-                if (!rover.Move((Movement)movement))
+                if (!rover.Move(movement))
                 {
                     break;
                 }

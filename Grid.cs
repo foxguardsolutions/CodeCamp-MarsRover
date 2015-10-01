@@ -4,11 +4,6 @@
     {
         private GridCell[,] grid;
 
-        public enum Direction
-        {
-            NORTH = 0, EAST = 90, SOUTH = 180, WEST = 270
-        }
-
         public Grid(int width, int height)
         {
             grid = new GridCell[width, height];

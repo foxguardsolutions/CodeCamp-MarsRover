@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing.Drawing2D;
 
 namespace MarsRover
@@ -8,6 +9,9 @@ namespace MarsRover
         private const int RIGHT_ANGLE = 90;
 
         private Matrix translationMatrix = new Matrix();
+        private Dictionary<Grid.Direction, Action> directionActions = new Dictionary<Grid.Direction, Action>();
+        private Dictionary<Movement, Action> movementActions = new Dictionary<Movement, Action>();
+        private Dictionary<Movement, char> movementDictionary;
 
         public Grid World { get;  set; }
         public GridCell CurrentLocation { get; set; }
@@ -21,47 +25,71 @@ namespace MarsRover
 
             translationMatrix.Translate(x, y);
 
-            switch (dir)
-            {
-                case Grid.Direction.NORTH:
-                    translationMatrix.Rotate(-RIGHT_ANGLE);
-                    break;
-                case Grid.Direction.SOUTH:
-                    translationMatrix.Rotate(RIGHT_ANGLE);
-                    break;
-                case Grid.Direction.WEST:
-                    translationMatrix.Rotate(2 * RIGHT_ANGLE);
-                    break;
-                case Grid.Direction.EAST:
-                    break;
-            }
+            GenerateDirectionActions();
+            GenerateMovementActions();
+
+            directionActions[dir].Invoke();
+        }
+
+        private void GenerateDirectionActions()
+        {
+            directionActions.Add(Grid.Direction.NORTH, TurnNorth);
+            directionActions.Add(Grid.Direction.EAST, TurnEast);
+            directionActions.Add(Grid.Direction.SOUTH, TurnSouth);
+            directionActions.Add(Grid.Direction.WEST, TurnWest);
+        }
+
+        private void GenerateMovementActions()
+        {
+            movementActions.Add(Movement.FORWARD, MoveForward);
+            movementActions.Add(Movement.BACKWARD, MoveBackward);
+            movementActions.Add(Movement.LEFT, TurnNorth);
+            movementActions.Add(Movement.RIGHT, TurnSouth);
+        }
+
+        private void TurnNorth()
+        {
+            translationMatrix.Rotate(-RIGHT_ANGLE);
+        }
+
+        private void TurnSouth()
+        {
+            translationMatrix.Rotate(RIGHT_ANGLE);
+        }
+
+        private void TurnEast()
+        {
+            translationMatrix.Rotate(0);
+        }
+
+        private void TurnWest()
+        {
+            translationMatrix.Rotate(2 * RIGHT_ANGLE);
+        }
+
+        private void MoveForward()
+        {
+            translationMatrix.Translate(1, 0);
+        }
+
+        private void MoveBackward()
+        {
+            translationMatrix.Translate(-1, 0);
         }
 
         public bool Move(Movement movement)
         {
-            switch (movement)
-            {
-                case Movement.FORWARD:
-                    translationMatrix.Translate(1, 0);
-                    break;
-                case Movement.BACKWARD:
-                    translationMatrix.Translate(-1, 0);
-                    break;
-                case Movement.LEFT:
-                    translationMatrix.Rotate(-RIGHT_ANGLE);
-                    break;
-                case Movement.RIGHT:
-                    translationMatrix.Rotate(RIGHT_ANGLE);
-                    break;
-            }
+            Console.WriteLine(movement);
+
+            movementActions[movement].Invoke();
 
             return IsValidMove();
         }
 
         private bool IsValidMove()
         {
-            int x = Convert.ToInt32(translationMatrix.OffsetX);
-            int y = Convert.ToInt32(translationMatrix.OffsetY);
+            int x = (int)Math.Round(translationMatrix.OffsetX);
+            int y = (int)Math.Round(translationMatrix.OffsetY);
 
             if (!World.GridCellAt(x, y).ContainsObstacle)
             {
@@ -70,7 +98,7 @@ namespace MarsRover
                 return true;
             }
 
-            Console.WriteLine("Encounter Obstacle!");
+            Console.WriteLine("Encountered Obstacle!");
 
             return false;
         }

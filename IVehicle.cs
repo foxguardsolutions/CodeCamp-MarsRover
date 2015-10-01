@@ -1,8 +1,10 @@
-﻿namespace MarsRover
+﻿using System.Collections.Generic;
+
+namespace MarsRover
 {
     public enum Movement
     {
-        FORWARD = 'F', BACKWARD = 'B', LEFT = 'L', RIGHT = 'R'
+        FORWARD, BACKWARD, LEFT, RIGHT
     }
 
     public interface IVehicle

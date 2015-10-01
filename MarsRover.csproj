@@ -66,7 +66,7 @@
     <Compile Include="GridCell.cs" />
     <Compile Include="GridTest.cs" />
     <Compile Include="IVehicle.cs" />
-    <Compile Include="MarsRoverMain.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Rover.cs" />
     <Compile Include="RoverTest.cs" />
   </ItemGroup>

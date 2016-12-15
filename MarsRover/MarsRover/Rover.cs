@@ -18,14 +18,27 @@ namespace MarsRover
 
         public int[] GetLocation()
         {
-            var lastPosition = _path[_path.Count - 1];
+            var lastPosition = GetLastPosition();
             return lastPosition.Coordinates;
         }
 
         public CardinalDirection GetOrientation()
         {
-            var lastPosition = _path[_path.Count - 1];
+            var lastPosition = GetLastPosition();
             return lastPosition.Orientation;
+        }
+
+        public void Move()
+        {
+            var nextCoordinates = GetLastPosition().Coordinates;
+            nextCoordinates[0]++;
+            var nextPosition = new Position(nextCoordinates[0], nextCoordinates[1], CardinalDirection.North);
+            _path.Add(nextPosition);
+        }
+
+        private Position GetLastPosition()
+        {
+            return _path[_path.Count - 1];
         }
     }
 }

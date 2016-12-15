@@ -9,6 +9,7 @@ namespace MarsRover
     public class Rover
     {
         private List<Position> _path;
+        private IAct _strategy;
 
         public Rover(int x, int y, CardinalDirection directionFacing)
         {
@@ -28,61 +29,26 @@ namespace MarsRover
             return lastPosition.Orientation;
         }
 
-        public void Move(bool isMovingForward)
+        public void Move()
         {
             var lastPosition = GetLastPosition();
-            var nextCoordinates = AdjustCoordinates(lastPosition, isMovingForward);
-            var nextPosition = new Position(nextCoordinates[0], nextCoordinates[1], lastPosition.Orientation);
+            var nextPosition = Act(lastPosition);
             _path.Add(nextPosition);
         }
 
-        public void Turn()
+        private Position Act(Position lastPosition)
         {
-            var lastPosition = GetLastPosition();
-            var nextOrientation = AdjustOrientation(lastPosition);
-            var nextPosition = new Position(lastPosition.Coordinates[0], lastPosition.Coordinates[1], nextOrientation);
-            _path.Add(nextPosition);
+            return _strategy.Act(lastPosition);
+        }
+
+        public void SetAction(IAct strategy)
+        {
+            _strategy = strategy;
         }
 
         private Position GetLastPosition()
         {
             return _path[_path.Count - 1];
-        }
-
-        private int[] AdjustCoordinates(Position lastPosition, bool isMovingForward)
-        {
-            var nextCoordinates = lastPosition.Coordinates;
-            var axisOfMovement = GetAxisOfMovement(lastPosition.Orientation);
-            var adjustmentValue = GetAdjustmentValue(lastPosition.Orientation, isMovingForward);
-            nextCoordinates[axisOfMovement] += adjustmentValue;
-            return nextCoordinates;
-        }
-
-        private CardinalDirection AdjustOrientation(Position lastPosition)
-        {
-            var modulus = Enum.GetNames(typeof(CardinalDirection)).Count();
-            return (CardinalDirection)((int)(lastPosition.Orientation + 1) % modulus);
-        }
-
-        private int GetAxisOfMovement(CardinalDirection orientation)
-        {
-            return (int)orientation % 2;
-        }
-
-        private int GetAdjustmentValue(CardinalDirection orientation, bool isMovingForward)
-        {
-            if (IsMovingInNegativeDirection(orientation, isMovingForward))
-            {
-                return -1;
-            }
-
-            return 1;
-        }
-
-        private static bool IsMovingInNegativeDirection(CardinalDirection orientation, bool isMovingForward)
-        {
-            var isFacingNorthOrEast = (int)orientation / 2 == 0;
-            return isFacingNorthOrEast ^ isMovingForward;
         }
     }
 }

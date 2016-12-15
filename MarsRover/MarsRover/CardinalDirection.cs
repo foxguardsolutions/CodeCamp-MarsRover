@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MarsRover
+﻿namespace MarsRover
 {
     public enum CardinalDirection
     {
         North,
-        South,
         East,
-        West
+        South,
+        West,
     }
 }

@@ -53,10 +53,19 @@ namespace MarsRover.Tests
             yield return new TestCaseData(2, 1, West, false, 2, 2);
         }
 
-        [Test]
-        public void GetOrientation_AfterTurn_Returns()
+        [TestCaseSource(nameof(TurnTestCases))]
+        public void GetOrientation_AfterTurn_Returns(CardinalDirection startFacing, CardinalDirection endFacing)
         {
-            var testRover = new Rover(0, 0, North);
+            var testRover = new Rover(0, 0, startFacing);
+            testRover.Turn();
+            Assert.That(testRover.GetOrientation(), Is.EqualTo(endFacing));
+        }
+
+        private static IEnumerable<TestCaseData> TurnTestCases()
+        {
+            yield return new TestCaseData(North, East);
+            yield return new TestCaseData(East, South);
+            yield return new TestCaseData(West, North);
         }
     }
 }

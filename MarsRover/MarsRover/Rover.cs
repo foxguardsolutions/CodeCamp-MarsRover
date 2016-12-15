@@ -36,6 +36,14 @@ namespace MarsRover
             _path.Add(nextPosition);
         }
 
+        public void Turn()
+        {
+            var lastPosition = GetLastPosition();
+            var nextOrientation = AdjustOrientation(lastPosition);
+            var nextPosition = new Position(lastPosition.Coordinates[0], lastPosition.Coordinates[1], nextOrientation);
+            _path.Add(nextPosition);
+        }
+
         private Position GetLastPosition()
         {
             return _path[_path.Count - 1];
@@ -50,9 +58,15 @@ namespace MarsRover
             return nextCoordinates;
         }
 
+        private CardinalDirection AdjustOrientation(Position lastPosition)
+        {
+            var modulus = Enum.GetNames(typeof(CardinalDirection)).Count();
+            return (CardinalDirection)((int)(lastPosition.Orientation + 1) % modulus);
+        }
+
         private int GetAxisOfMovement(CardinalDirection orientation)
         {
-            return (int)orientation / 2;
+            return (int)orientation % 2;
         }
 
         private int GetAdjustmentValue(CardinalDirection orientation, bool isMovingForward)
@@ -67,7 +81,7 @@ namespace MarsRover
 
         private static bool IsMovingInNegativeDirection(CardinalDirection orientation, bool isMovingForward)
         {
-            var isFacingNorthOrEast = (int)orientation % 2 == 0;
+            var isFacingNorthOrEast = (int)orientation / 2 == 0;
             return isFacingNorthOrEast ^ isMovingForward;
         }
     }

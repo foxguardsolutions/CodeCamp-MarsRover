@@ -30,15 +30,40 @@ namespace MarsRover
 
         public void Move()
         {
-            var nextCoordinates = GetLastPosition().Coordinates;
-            nextCoordinates[0]++;
-            var nextPosition = new Position(nextCoordinates[0], nextCoordinates[1], CardinalDirection.North);
+            var lastPosition = GetLastPosition();
+            var nextCoordinates = AdjustCoordinates(lastPosition);
+            var nextPosition = new Position(nextCoordinates[0], nextCoordinates[1], lastPosition.Orientation);
             _path.Add(nextPosition);
         }
 
         private Position GetLastPosition()
         {
             return _path[_path.Count - 1];
+        }
+
+        private int[] AdjustCoordinates(Position lastPosition)
+        {
+            var nextCoordinates = lastPosition.Coordinates;
+            var axisOfMovement = GetAxisOfMovement(lastPosition.Orientation);
+            var adjustmentValue = GetAdjustmentValue(lastPosition.Orientation);
+            nextCoordinates[axisOfMovement] += adjustmentValue;
+            return nextCoordinates;
+        }
+
+        private int GetAxisOfMovement(CardinalDirection orientation)
+        {
+            return (int)orientation / 2;
+        }
+
+        private int GetAdjustmentValue(CardinalDirection orientation)
+        {
+            var movingInPositiveDirection = (int)orientation % 2 == 0;
+            if (movingInPositiveDirection)
+            {
+                return 1;
+            }
+
+            return -1;
         }
     }
 }

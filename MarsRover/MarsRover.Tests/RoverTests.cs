@@ -21,11 +21,19 @@ namespace MarsRover.Tests
         }
 
         [TestCaseSource(nameof(MoveTestCases))]
-        public void Move_Works(int startX, int startY, CardinalDirection startFacing, int endX, int endY)
+        public void GetLocation_AfterMove_Returns(int startX, int startY, CardinalDirection startFacing, int endX, int endY)
         {
             var testRover = new Rover(startX, startY, startFacing);
             testRover.Move();
             Assert.That(testRover.GetLocation(), Is.EqualTo(new int[] { endX, endY }));
+        }
+
+        [TestCaseSource(nameof(MoveTestCases))]
+        public void GetOrientation_AfterMove_Returns(int startX, int startY, CardinalDirection startFacing, int endX, int endY)
+        {
+            var testRover = new Rover(startX, startY, startFacing);
+            testRover.Move();
+            Assert.That(testRover.GetOrientation(), Is.EqualTo(startFacing));
         }
 
         private static IEnumerable<TestCaseData> MoveTestCases()
@@ -33,6 +41,9 @@ namespace MarsRover.Tests
             yield return new TestCaseData(1, 0, CardinalDirection.North, 2, 0);
             yield return new TestCaseData(2, 0, CardinalDirection.North, 3, 0);
             yield return new TestCaseData(2, 1, CardinalDirection.North, 3, 1);
+            yield return new TestCaseData(2, 1, CardinalDirection.South, 1, 1);
+            yield return new TestCaseData(2, 1, CardinalDirection.East, 2, 2);
+            yield return new TestCaseData(2, 1, CardinalDirection.West, 2, 0);
         }
     }
 }

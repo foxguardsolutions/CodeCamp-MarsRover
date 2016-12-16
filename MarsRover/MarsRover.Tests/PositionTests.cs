@@ -24,8 +24,8 @@ namespace MarsRover.Tests
         public void GridGetter_Returns()
         {
             var testPosition = new Position(1, 0, North, new Grid());
-            var gridMax = testPosition.ReferenceGrid.Size();
-            Assert.That(gridMax, Is.EqualTo(new int[] { 1000, 1000 }));
+            var gridSize = testPosition.ReferenceGrid.Size();
+            Assert.That(gridSize, Is.EqualTo(new int[] { 1000, 1000 }));
         }
     }
 }

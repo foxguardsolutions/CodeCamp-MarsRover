@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace MarsRover
 {
@@ -25,11 +27,19 @@ namespace MarsRover
             return lastPosition.Orientation;
         }
 
-        public void Move()
+        public bool TryMove()
         {
             var lastPosition = GetLastPosition();
             var nextPosition = Act(lastPosition);
-            _path.Add(nextPosition);
+            var isValidMovement = CanMoveTo(nextPosition);
+            if (isValidMovement)
+                _path.Add(nextPosition);
+            return isValidMovement;
+        }
+
+        private bool CanMoveTo(Position nextPosition)
+        {
+            return nextPosition.ReferenceGrid.IsClearOfObstacles(nextPosition.Coordinates[0], nextPosition.Coordinates[1]);
         }
 
         private Position GetLastPosition()

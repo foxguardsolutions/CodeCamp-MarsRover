@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Diagnostics;
+using NUnit.Framework;
 using static MarsRover.CardinalDirection;
 
 namespace MarsRover.Tests
@@ -38,6 +39,17 @@ namespace MarsRover.Tests
             Assert.That(endingOrientation, Is.EqualTo(South));
         }
 
+        [Test]
+        public void GetLocation_AfterMovementThroughObstacle_ReturnsLastPositionBeforeObstacle()
+        {
+            var testGrid = new Grid();
+            testGrid.AddObstacle(0, 1);
+            var testRover = new Rover(0, 0, North, testGrid);
+            MoveForward(testRover);
+            var endingCoordinates = testRover.GetLocation();
+            Assert.That(endingCoordinates, Is.EqualTo(new int[] { 0, 0 }));
+        }
+
         public void MoveForwardTurnRightMoveForward(Rover testRover)
         {
             MoveForward(testRover);
@@ -55,14 +67,14 @@ namespace MarsRover.Tests
         {
             var isTurningCounterclockwise = false;
             testRover.SetAction(new Rotate(isTurningCounterclockwise));
-            testRover.Move();
+            testRover.TryMove();
         }
 
         private void MoveForward(Rover testRover)
         {
             var isMovingForward = true;
             testRover.SetAction(new Translate(isMovingForward));
-            testRover.Move();
+            testRover.TryMove();
         }
     }
 }

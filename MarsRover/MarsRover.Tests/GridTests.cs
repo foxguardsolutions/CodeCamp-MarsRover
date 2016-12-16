@@ -16,5 +16,17 @@ namespace MarsRover.Tests
             var gridSize = testGrid.Size();
             Assert.That(gridSize, Is.EqualTo(new int[] { expectedXSize, expectedYSize }));
         }
+
+        [Test]
+        [TestCase(0, 0, 0, 1, true)]
+        [TestCase(0, 1, 0, 1, false)]
+        [TestCase(-1, 0, -1, 0, true)]
+        public void HasObstacle_Returns(int obstacleX, int obstacleY, int checkX, int checkY, bool expectedResult)
+        {
+            var testGrid = new Grid();
+            testGrid.AddObstacle(obstacleX, obstacleY);
+            var hasObstacle = testGrid.IsClearOfObstacles(checkX, checkY);
+            Assert.That(hasObstacle, Is.EqualTo(expectedResult));
+        }
     }
 }

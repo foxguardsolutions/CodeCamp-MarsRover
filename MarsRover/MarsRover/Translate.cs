@@ -17,9 +17,9 @@
         {
             var adjustmentValue = GetAdjustmentValue(IncreasesCoordinateValue(lastPosition.Orientation));
             var axisOfMovement = GetAxisOfMovement(lastPosition.Orientation);
-            var gridDimension = lastPosition.ReferenceGrid.Size()[axisOfMovement];
-            var nextCoordinates = lastPosition.Coordinates;
-            nextCoordinates[axisOfMovement] = AdjustModulo(nextCoordinates[axisOfMovement], adjustmentValue, gridDimension);
+            var relevantGridDimension = lastPosition.ReferenceGrid.Size()[axisOfMovement];
+            var nextCoordinates = (int[])lastPosition.Coordinates.Clone();
+            nextCoordinates[axisOfMovement] = AdjustModulo(nextCoordinates[axisOfMovement], adjustmentValue, relevantGridDimension);
             return nextCoordinates;
         }
 

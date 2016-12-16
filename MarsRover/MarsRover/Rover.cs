@@ -7,9 +7,9 @@ namespace MarsRover
         private List<Position> _path;
         private IAct _strategy;
 
-        public Rover(int x, int y, CardinalDirection directionFacing)
+        public Rover(int x, int y, CardinalDirection directionFacing, Grid referenceGrid)
         {
-            var startingPosition = new Position(x, y, directionFacing);
+            var startingPosition = new Position(x, y, directionFacing, referenceGrid);
             _path = new List<Position>() { startingPosition };
         }
 

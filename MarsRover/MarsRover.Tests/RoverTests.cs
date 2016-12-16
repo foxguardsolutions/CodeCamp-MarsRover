@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using static MarsRover.CardinalDirection;
 
 namespace MarsRover.Tests
@@ -11,21 +9,21 @@ namespace MarsRover.Tests
         [Test]
         public void GetLocation_WithoutMovement_ReturnsStartingCoordinates()
         {
-            var testRover = new Rover(1, 0, North);
+            var testRover = new Rover(1, 0, North, new Grid());
             Assert.That(testRover.GetLocation(), Is.EqualTo(new int[] { 1, 0 }));
         }
 
         [Test]
         public void GetOrientation_WithoutMovement_ReturnsStartingOrientation()
         {
-            var testRover = new Rover(1, 0, North);
+            var testRover = new Rover(1, 0, North, new Grid());
             Assert.That(testRover.GetOrientation(), Is.EqualTo(North));
         }
 
         [Test]
         public void GetLocation_AfterMovement_ReturnsLastPositionCoordinates()
         {
-            var testRover = new Rover(0, 0, North);
+            var testRover = new Rover(0, 0, North, new Grid());
             MoveForwardTurnRightMoveForward(testRover);
             var endingCoordinates = testRover.GetLocation();
             Assert.That(endingCoordinates, Is.EqualTo(new int[] { 1, 1 }));
@@ -34,7 +32,7 @@ namespace MarsRover.Tests
         [Test]
         public void GetOrientation_AfterMovement_ReturnsLastPositionOrientation()
         {
-            var testRover = new Rover(0, 0, North);
+            var testRover = new Rover(0, 0, North, new Grid());
             TurnAround(testRover);
             var endingOrientation = testRover.GetOrientation();
             Assert.That(endingOrientation, Is.EqualTo(South));
@@ -55,8 +53,8 @@ namespace MarsRover.Tests
 
         private void TurnRight(Rover testRover)
         {
-            var isTurningClockwise = true;
-            testRover.SetAction(new Rotate(isTurningClockwise));
+            var isTurningCounterclockwise = false;
+            testRover.SetAction(new Rotate(isTurningCounterclockwise));
             testRover.Move();
         }
 

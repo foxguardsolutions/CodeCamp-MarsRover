@@ -2,9 +2,9 @@
 {
     public enum CardinalDirection
     {
-        North,
         East,
-        South,
+        North,
         West,
+        South,
     }
 }

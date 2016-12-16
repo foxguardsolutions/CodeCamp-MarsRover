@@ -1,26 +1,25 @@
 ﻿namespace MarsRover
 {
-    public class Translate : IAct
+    public class Translate : Action
     {
-        private bool _isMovingForward;
-
         public Translate(bool isMovingForward)
+            : base(isMovingForward)
         {
-            _isMovingForward = isMovingForward;
         }
 
-        public Position Act(Position lastPosition)
+        public override Position Act(Position lastPosition)
         {
             var nextCoordinates = AdjustCoordinates(lastPosition);
-            return new Position(nextCoordinates[0], nextCoordinates[1], lastPosition.Orientation);
+            return new Position(nextCoordinates[0], nextCoordinates[1], lastPosition.Orientation, lastPosition.ReferenceGrid);
         }
 
         private int[] AdjustCoordinates(Position lastPosition)
         {
-            var nextCoordinates = lastPosition.Coordinates;
+            var adjustmentValue = GetAdjustmentValue(IncreasesCoordinateValue(lastPosition.Orientation));
             var axisOfMovement = GetAxisOfMovement(lastPosition.Orientation);
-            var adjustmentValue = GetAdjustmentValue(lastPosition.Orientation);
-            nextCoordinates[axisOfMovement] += adjustmentValue;
+            var gridDimension = lastPosition.ReferenceGrid.Size()[axisOfMovement];
+            var nextCoordinates = lastPosition.Coordinates;
+            nextCoordinates[axisOfMovement] = AdjustModulo(nextCoordinates[axisOfMovement], adjustmentValue, gridDimension);
             return nextCoordinates;
         }
 
@@ -29,17 +28,10 @@
             return (int)orientation % 2;
         }
 
-        private int GetAdjustmentValue(CardinalDirection orientation)
-        {
-            if (IsMovingInNegativeDirection(orientation))
-                return -1;
-            return 1;
-        }
-
-        private bool IsMovingInNegativeDirection(CardinalDirection orientation)
+        private bool IncreasesCoordinateValue(CardinalDirection orientation)
         {
             var isFacingNorthOrEast = (int)orientation / 2 == 0;
-            return isFacingNorthOrEast ^ _isMovingForward;
+            return !(isFacingNorthOrEast ^ HasPositiveDirectionOfMovement);
         }
     }
 }

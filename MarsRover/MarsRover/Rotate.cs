@@ -3,33 +3,25 @@ using System.Linq;
 
 namespace MarsRover
 {
-    public class Rotate : IAct
+    public class Rotate : Action
     {
-        private bool _isTurningClockwise;
-
-        public Rotate(bool isTurningClockwise)
+        public Rotate(bool isTurningCounterclockwise)
+            : base(isTurningCounterclockwise)
         {
-            _isTurningClockwise = isTurningClockwise;
         }
 
-        public Position Act(Position lastPosition)
+        public override Position Act(Position lastPosition)
         {
             var nextOrientation = AdjustOrientation(lastPosition);
-            return new Position(lastPosition.Coordinates[0], lastPosition.Coordinates[1], nextOrientation);
+            return new Position(lastPosition.Coordinates[0], lastPosition.Coordinates[1], nextOrientation, lastPosition.ReferenceGrid);
         }
 
         private CardinalDirection AdjustOrientation(Position lastPosition)
         {
+            var adjustmentValue = GetAdjustmentValue(HasPositiveDirectionOfMovement);
             var directionCount = Enum.GetNames(typeof(CardinalDirection)).Count();
-            var adjustmentValue = GetAdjustmentValue() + directionCount;
-            return (CardinalDirection)((int)(lastPosition.Orientation + adjustmentValue) % directionCount);
-        }
-
-        private int GetAdjustmentValue()
-        {
-            if (_isTurningClockwise)
-                return 1;
-            return -1;
+            var nextOrientation = AdjustModulo((int)lastPosition.Orientation, adjustmentValue, directionCount);
+            return (CardinalDirection)nextOrientation;
         }
     }
 }

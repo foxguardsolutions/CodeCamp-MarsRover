@@ -48,6 +48,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CardinalDirection.cs" />
+    <Compile Include="Grid.cs" />
+    <Compile Include="Action.cs" />
     <Compile Include="IAct.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Program.cs" />

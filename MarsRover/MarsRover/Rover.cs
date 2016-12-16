@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace MarsRover
 {
@@ -36,6 +32,11 @@ namespace MarsRover
             _path.Add(nextPosition);
         }
 
+        private Position GetLastPosition()
+        {
+            return _path[_path.Count - 1];
+        }
+
         private Position Act(Position lastPosition)
         {
             return _strategy.Act(lastPosition);
@@ -44,11 +45,6 @@ namespace MarsRover
         public void SetAction(IAct strategy)
         {
             _strategy = strategy;
-        }
-
-        private Position GetLastPosition()
-        {
-            return _path[_path.Count - 1];
         }
     }
 }

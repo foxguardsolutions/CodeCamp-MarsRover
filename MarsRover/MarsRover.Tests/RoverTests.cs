@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using static MarsRover.CardinalDirection;
 
@@ -8,69 +9,62 @@ namespace MarsRover.Tests
     public class RoverTests
     {
         [Test]
-        public void GetLocation_WithoutMovement_Returns()
+        public void GetLocation_WithoutMovement_ReturnsStartingCoordinates()
         {
             var testRover = new Rover(1, 0, North);
             Assert.That(testRover.GetLocation(), Is.EqualTo(new int[] { 1, 0 }));
         }
 
         [Test]
-        public void GetOrientation_WithoutMovement_Returns()
+        public void GetOrientation_WithoutMovement_ReturnsStartingOrientation()
         {
             var testRover = new Rover(1, 0, North);
             Assert.That(testRover.GetOrientation(), Is.EqualTo(North));
         }
 
-        [TestCaseSource(nameof(TranslateTestCases))]
-        public void GetLocation_AfterMove_Returns(int startX, int startY, CardinalDirection startFacing, bool isMovingForward, int endX, int endY)
+        [Test]
+        public void GetLocation_AfterMovement_ReturnsLastPositionCoordinates()
         {
-            var testRover = new Rover(startX, startY, startFacing);
-            testRover.SetAction(new Translate(isMovingForward));
-            testRover.Move();
-            Assert.That(testRover.GetLocation(), Is.EqualTo(new int[] { endX, endY }));
+            var testRover = new Rover(0, 0, North);
+            MoveForwardTurnRightMoveForward(testRover);
+            var endingCoordinates = testRover.GetLocation();
+            Assert.That(endingCoordinates, Is.EqualTo(new int[] { 1, 1 }));
         }
 
-        [TestCaseSource(nameof(TranslateTestCases))]
-        public void GetOrientation_AfterMove_Returns(int startX, int startY, CardinalDirection startFacing, bool isMovingForward, int endX, int endY)
+        [Test]
+        public void GetOrientation_AfterMovement_ReturnsLastPositionOrientation()
         {
-            var testRover = new Rover(startX, startY, startFacing);
-            testRover.SetAction(new Translate(isMovingForward));
-            testRover.Move();
-            Assert.That(testRover.GetOrientation(), Is.EqualTo(startFacing));
+            var testRover = new Rover(0, 0, North);
+            TurnAround(testRover);
+            var endingOrientation = testRover.GetOrientation();
+            Assert.That(endingOrientation, Is.EqualTo(South));
         }
 
-        private static IEnumerable<TestCaseData> TranslateTestCases()
+        public void MoveForwardTurnRightMoveForward(Rover testRover)
         {
-            yield return new TestCaseData(1, 0, North, true, 2, 0);
-            yield return new TestCaseData(2, 0, North, true, 3, 0);
-            yield return new TestCaseData(2, 1, North, true, 3, 1);
-            yield return new TestCaseData(2, 1, South, true, 1, 1);
-            yield return new TestCaseData(2, 1, East, true, 2, 2);
-            yield return new TestCaseData(2, 1, West, true, 2, 0);
-            yield return new TestCaseData(1, 0, North, false, 0, 0);
-            yield return new TestCaseData(2, 0, North, false, 1, 0);
-            yield return new TestCaseData(2, 1, North, false, 1, 1);
-            yield return new TestCaseData(2, 1, South, false, 3, 1);
-            yield return new TestCaseData(2, 1, East, false, 2, 0);
-            yield return new TestCaseData(2, 1, West, false, 2, 2);
+            MoveForward(testRover);
+            TurnRight(testRover);
+            MoveForward(testRover);
         }
 
-        [TestCaseSource(nameof(RotateTestCases))]
-        public void GetOrientation_AfterTurn_Returns(CardinalDirection startFacing, bool isTurningClockwise, CardinalDirection endFacing)
+        public void TurnAround(Rover testRover)
         {
-            var testRover = new Rover(0, 0, startFacing);
+            TurnRight(testRover);
+            TurnRight(testRover);
+        }
+
+        private void TurnRight(Rover testRover)
+        {
+            var isTurningClockwise = true;
             testRover.SetAction(new Rotate(isTurningClockwise));
             testRover.Move();
-            Assert.That(testRover.GetOrientation(), Is.EqualTo(endFacing));
         }
 
-        private static IEnumerable<TestCaseData> RotateTestCases()
+        private void MoveForward(Rover testRover)
         {
-            yield return new TestCaseData(North, true, East);
-            yield return new TestCaseData(East, true, South);
-            yield return new TestCaseData(West, true, North);
-            yield return new TestCaseData(East, false, North);
-            yield return new TestCaseData(North, false, West);
+            var isMovingForward = true;
+            testRover.SetAction(new Translate(isMovingForward));
+            testRover.Move();
         }
     }
 }

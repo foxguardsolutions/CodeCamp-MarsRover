@@ -65,8 +65,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PositionTests.cs" />
+    <Compile Include="RotateTests.cs" />
     <Compile Include="RoverTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TranslateTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -36,9 +36,6 @@ namespace MarsRover.Tests
             var testInitializer = new Initializer();
             var testGrid = new Grid();
             Assert.Throws<ArgumentException>(() => { testInitializer.PlaceRover(x, y, 'N', testGrid); }, exceptionMessage);
-            Assert.That(
-                () => { testInitializer.PlaceRover(x, y, 'N', testGrid); },
-                Throws.ArgumentException.With.Property("Message").EqualTo(exceptionMessage));
         }
     }
 }

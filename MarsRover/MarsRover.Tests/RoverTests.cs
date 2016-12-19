@@ -50,14 +50,14 @@ namespace MarsRover.Tests
             Assert.That(endingCoordinates, Is.EqualTo(new int[] { 0, 0 }));
         }
 
-        public void MoveForwardTurnRightMoveForward(Rover testRover)
+        private void MoveForwardTurnRightMoveForward(Rover testRover)
         {
             MoveForward(testRover);
             TurnRight(testRover);
             MoveForward(testRover);
         }
 
-        public void TurnAround(Rover testRover)
+        private void TurnAround(Rover testRover)
         {
             TurnRight(testRover);
             TurnRight(testRover);

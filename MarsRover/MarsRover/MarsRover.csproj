@@ -52,6 +52,7 @@
     <Compile Include="Grid.cs" />
     <Compile Include="Action.cs" />
     <Compile Include="IAct.cs" />
+    <Compile Include="Initializer.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

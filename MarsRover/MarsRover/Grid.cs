@@ -39,11 +39,11 @@ namespace MarsRover
 
         public void AddObstacle(int x, int y)
         {
-            if (IsOnGrid(x, y))
+            if (ContainsPoint(x, y))
                 _obstacles.Add(new int[] { x, y });
         }
 
-        private bool IsOnGrid(int x, int y)
+        internal bool ContainsPoint(int x, int y)
         {
             return (x >= 0) && (x < _xSize) && (y >= 0) && (y < _ySize);
         }

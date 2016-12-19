@@ -16,7 +16,7 @@ namespace MarsRover.Tests
         public void Execute_ReturnsType(char candidate, Type expectedType)
         {
             var testCommand = new Command(candidate);
-            var strategy = testCommand.Execute();
+            var strategy = testCommand.CreateAction();
             Assert.That(strategy.GetType(), Is.EqualTo(expectedType));
         }
 
@@ -25,7 +25,7 @@ namespace MarsRover.Tests
         {
             var startingPosition = new Position(0, 0, North, new Grid());
             var rotateCommand = new Command(candidate);
-            var rotation = rotateCommand.Execute();
+            var rotation = rotateCommand.CreateAction();
             var endingPosition = rotation.Act(startingPosition);
             Assert.That(endingPosition.Orientation, Is.EqualTo(endFacing));
         }
@@ -41,7 +41,7 @@ namespace MarsRover.Tests
         {
             var startingPosition = new Position(1, 0, East, new Grid());
             var translateCommand = new Command(candidate);
-            var translation = translateCommand.Execute();
+            var translation = translateCommand.CreateAction();
             var endingPosition = translation.Act(startingPosition);
             Assert.That(endingPosition.Coordinates, Is.EqualTo(new int[] { endX, 0 }));
         }

@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="CommandTests.cs" />
     <Compile Include="GridTests.cs" />
+    <Compile Include="InitializerTests.cs" />
     <Compile Include="PositionTests.cs" />
     <Compile Include="RotateTests.cs" />
     <Compile Include="RoverTests.cs" />

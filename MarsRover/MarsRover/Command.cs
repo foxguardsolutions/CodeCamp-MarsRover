@@ -30,7 +30,7 @@ namespace MarsRover
             return _commandsWithPositiveDirectionOfMovement.Contains(value);
         }
 
-        public IAct Execute()
+        public IAct CreateAction()
         {
             return (IAct)Activator.CreateInstance(_strategyType, new object[] { _hasPositiveDirectionOfMovement });
         }

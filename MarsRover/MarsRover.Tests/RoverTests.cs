@@ -40,7 +40,7 @@ namespace MarsRover.Tests
         }
 
         [Test]
-        public void GetLocation_AfterMovementThroughObstacle_ReturnsLastPositionBeforeObstacle()
+        public void GetLocation_AfterSingleMovementThroughObstacle_ReturnsStartingCoordinates()
         {
             var testGrid = new Grid();
             testGrid.AddObstacle(0, 1);

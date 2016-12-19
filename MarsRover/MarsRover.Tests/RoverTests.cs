@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using static MarsRover.CardinalDirection;
 
 namespace MarsRover.Tests

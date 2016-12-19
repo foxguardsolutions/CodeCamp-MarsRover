@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 
 namespace MarsRover
 {
@@ -34,6 +32,8 @@ namespace MarsRover
             var isValidMovement = CanMoveTo(nextPosition);
             if (isValidMovement)
                 _path.Add(nextPosition);
+            else
+                new ObstacleReport(nextPosition);
             return isValidMovement;
         }
 

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MarsRover
+﻿namespace MarsRover
 {
     public class Position
     {

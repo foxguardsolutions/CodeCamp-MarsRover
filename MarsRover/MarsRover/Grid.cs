@@ -5,9 +5,9 @@ namespace MarsRover
 {
     public class Grid
     {
-        private const int DEFAULTSIZE = 1000;
-        private int _xSize;
-        private int _ySize;
+        private const ushort DEFAULTSIZE = 1000;
+        private ushort _xSize;
+        private ushort _ySize;
         private List<int[]> _obstacles;
 
         public Grid()
@@ -15,19 +15,19 @@ namespace MarsRover
         {
         }
 
-        public Grid(int xSize, int ySize)
+        public Grid(ushort xSize, ushort ySize)
         {
             _xSize = ValidateSize(xSize);
             _ySize = ValidateSize(ySize);
             _obstacles = new List<int[]>();
         }
 
-        public int[] Size()
+        public ushort[] Size()
         {
-            return new int[] { _xSize, _ySize };
+            return new ushort[] { _xSize, _ySize };
         }
 
-        private int ValidateSize(int input)
+        private ushort ValidateSize(ushort input)
         {
             if (input < 1)
                 return DEFAULTSIZE;

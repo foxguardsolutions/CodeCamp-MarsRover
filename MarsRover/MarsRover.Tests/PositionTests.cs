@@ -9,7 +9,7 @@ namespace MarsRover.Tests
     {
         [TestCaseSource(nameof(PositionTestCases))]
         public void CoordinatesGetter_ReturnsStartingCoordinates(
-            int initialX, int initialY, CardinalDirection initialOrientation, int gridSizeX, int gridSizeY)
+            int initialX, int initialY, CardinalDirection initialOrientation, ushort gridSizeX, ushort gridSizeY)
         {
             var testPosition = new Position(initialX, initialY, initialOrientation, new Grid(gridSizeX, gridSizeY));
             Assert.That(testPosition.Coordinates, Is.EqualTo(new int[] { initialX, initialY }));
@@ -17,7 +17,7 @@ namespace MarsRover.Tests
 
         [TestCaseSource(nameof(PositionTestCases))]
         public void OrientationGetter_ReturnsStartingOrientation(
-            int initialX, int initialY, CardinalDirection initialOrientation, int gridSizeX, int gridSizeY)
+            int initialX, int initialY, CardinalDirection initialOrientation, ushort gridSizeX, ushort gridSizeY)
         {
             var testPosition = new Position(initialX, initialY, initialOrientation, new Grid(gridSizeX, gridSizeY));
             Assert.That(testPosition.Orientation, Is.EqualTo(initialOrientation));
@@ -25,7 +25,7 @@ namespace MarsRover.Tests
 
         [TestCaseSource(nameof(PositionTestCases))]
         public void GridGetter_ReturnsGridWithInitializedSize(
-            int initialX, int initialY, CardinalDirection initialOrientation, int gridSizeX, int gridSizeY)
+            int initialX, int initialY, CardinalDirection initialOrientation, ushort gridSizeX, ushort gridSizeY)
         {
             var testPosition = new Position(initialX, initialY, initialOrientation, new Grid(gridSizeX, gridSizeY));
             var gridSize = testPosition.ReferenceGrid.Size();
@@ -34,8 +34,8 @@ namespace MarsRover.Tests
 
         private static IEnumerable<TestCaseData> PositionTestCases()
         {
-            yield return new TestCaseData(1, 0, N, 1000, 1000);
-            yield return new TestCaseData(0, 1, S, 10, 100);
+            yield return new TestCaseData(1, 0, N, (ushort)1000, (ushort)1000);
+            yield return new TestCaseData(0, 1, S, (ushort)10, (ushort)100);
         }
     }
 }

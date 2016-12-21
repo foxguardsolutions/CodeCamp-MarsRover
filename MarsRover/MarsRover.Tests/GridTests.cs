@@ -6,15 +6,13 @@ namespace MarsRover.Tests
     public class GridTests
     {
         [Test]
-        [TestCase(10, 5, 10, 5)]
-        [TestCase(-1, 5, 1000, 5)]
-        [TestCase(-1, -1, 1000, 1000)]
-        [TestCase(0, 5, 1000, 5)]
-        public void Size_Returns(int inputX, int inputY, int expectedXSize, int expectedYSize)
+        [TestCase((ushort)10, (ushort)5, (ushort)10, (ushort)5)]
+        [TestCase((ushort)0, (ushort)5, (ushort)1000, (ushort)5)]
+        public void Size_Returns(ushort inputX, ushort inputY, ushort expectedXSize, ushort expectedYSize)
         {
             var testGrid = new Grid(inputX, inputY);
             var gridSize = testGrid.Size();
-            Assert.That(gridSize, Is.EqualTo(new int[] { expectedXSize, expectedYSize }));
+            Assert.That(gridSize, Is.EqualTo(new ushort[] { expectedXSize, expectedYSize }));
         }
 
         [Test]

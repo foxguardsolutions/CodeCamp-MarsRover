@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MarsRover
 {
     public class Rover
     {
-        // public Position Location { get; set; }
         private List<Position> _path;
 
         public Rover(int x, int y)
@@ -14,9 +14,28 @@ namespace MarsRover
             _path.Add(startPosition);
         }
 
-        public int[] GetLocation()
+        public Position GetLocation()
         {
-            return _path[_path.Count - 1].Coordinates;
+            return _path[_path.Count - 1];
+        }
+
+        public Position GetStartingLocation()
+        {
+            return _path[0];
+        }
+
+        public void Move()
+        {
+            var lastPosition = GetLocation();
+            var nextPosition = Translate(lastPosition);
+            _path.Add(nextPosition);
+        }
+
+        private Position Translate(Position position)
+        {
+            var nextPosition = position.Clone();
+            nextPosition.Coordinates[1]++;
+            return nextPosition;
         }
     }
 }

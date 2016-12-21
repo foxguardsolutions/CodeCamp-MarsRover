@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace MarsRover.Tests
 {
@@ -11,8 +12,33 @@ namespace MarsRover.Tests
         public void GetLocation_WithoutMovement_ReturnsInitialCoordinates(int initialX, int initialY)
         {
             var testRover = new Rover(initialX, initialY);
-            var roverCoordinates = testRover.GetLocation();
+            var roverCoordinates = testRover.GetLocation().Coordinates;
             Assert.That(roverCoordinates, Is.EqualTo(new int[] { initialX, initialY }));
+        }
+
+        [TestCaseSource(nameof(MoveTestCases))]
+        public void GetLocation_AfterForwardMove_ReturnsNewCoordinates(int initialX, int initialY, int finalX, int finalY)
+        {
+            var testRover = new Rover(initialX, initialY);
+            testRover.Move();
+            var roverCoordinates = testRover.GetLocation().Coordinates;
+            Assert.That(roverCoordinates, Is.EqualTo(new int[] { finalX, finalY }));
+        }
+
+        [TestCaseSource(nameof(MoveTestCases))]
+        public void GetStartingLocation_AfterForwardMove_ReturnsStartingCoordinates(int initialX, int initialY, int finalX, int finalY)
+        {
+            var testRover = new Rover(initialX, initialY);
+            testRover.Move();
+            var roverStartCoordinates = testRover.GetStartingLocation().Coordinates;
+            Assert.That(roverStartCoordinates, Is.EqualTo(new int[] { initialX, initialY }));
+        }
+
+        private static IEnumerable<TestCaseData> MoveTestCases()
+        {
+            yield return new TestCaseData(1, 0, 1, 1);
+            yield return new TestCaseData(0, 2, 0, 3);
+            yield return new TestCaseData(2, 0, 2, 1);
         }
     }
 }

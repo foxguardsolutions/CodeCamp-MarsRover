@@ -1,18 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace MarsRover
 {
     public class Rover
     {
-        public Point Location { get; set; }
+        // public Position Location { get; set; }
+        private List<Position> _path;
 
         public Rover(int x, int y)
         {
-            Location = new Point(x, y);
+            _path = new List<Position>();
+            var startPosition = new Position(x, y);
+            _path.Add(startPosition);
+        }
+
+        public int[] GetLocation()
+        {
+            return _path[_path.Count - 1].Coordinates;
         }
     }
 }

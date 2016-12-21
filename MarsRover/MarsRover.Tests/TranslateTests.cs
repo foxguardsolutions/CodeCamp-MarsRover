@@ -27,19 +27,19 @@ namespace MarsRover.Tests
 
         private static IEnumerable<TestCaseData> TranslateTestCases()
         {
-            yield return new TestCaseData(1, 0, East, true, 2, 0);
-            yield return new TestCaseData(2, 0, East, true, 3, 0);
-            yield return new TestCaseData(2, 1, East, true, 3, 1);
-            yield return new TestCaseData(2, 1, West, true, 1, 1);
-            yield return new TestCaseData(2, 1, North, true, 2, 2);
-            yield return new TestCaseData(2, 1, South, true, 2, 0);
-            yield return new TestCaseData(1, 0, East, false, 0, 0);
-            yield return new TestCaseData(2, 0, East, false, 1, 0);
-            yield return new TestCaseData(2, 1, East, false, 1, 1);
-            yield return new TestCaseData(2, 1, West, false, 3, 1);
-            yield return new TestCaseData(2, 1, North, false, 2, 0);
-            yield return new TestCaseData(2, 1, South, false, 2, 2);
-            yield return new TestCaseData(0, 1, West, true, 999, 1);
+            yield return new TestCaseData(1, 0, E, true, 2, 0);
+            yield return new TestCaseData(2, 0, E, true, 3, 0);
+            yield return new TestCaseData(2, 1, E, true, 3, 1);
+            yield return new TestCaseData(2, 1, W, true, 1, 1);
+            yield return new TestCaseData(2, 1, N, true, 2, 2);
+            yield return new TestCaseData(2, 1, S, true, 2, 0);
+            yield return new TestCaseData(1, 0, E, false, 0, 0);
+            yield return new TestCaseData(2, 0, E, false, 1, 0);
+            yield return new TestCaseData(2, 1, E, false, 1, 1);
+            yield return new TestCaseData(2, 1, W, false, 3, 1);
+            yield return new TestCaseData(2, 1, N, false, 2, 0);
+            yield return new TestCaseData(2, 1, S, false, 2, 2);
+            yield return new TestCaseData(0, 1, W, true, 999, 1);
         }
     }
 }

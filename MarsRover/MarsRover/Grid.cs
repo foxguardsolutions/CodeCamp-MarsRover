@@ -11,10 +11,8 @@ namespace MarsRover
         private List<int[]> _obstacles;
 
         public Grid()
+            : this(DEFAULTSIZE, DEFAULTSIZE)
         {
-            _xSize = DEFAULTSIZE;
-            _ySize = DEFAULTSIZE;
-            _obstacles = new List<int[]>();
         }
 
         public Grid(int xSize, int ySize)

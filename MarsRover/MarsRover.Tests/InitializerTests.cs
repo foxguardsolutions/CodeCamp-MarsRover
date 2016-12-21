@@ -7,12 +7,22 @@ namespace MarsRover.Tests
     [TestFixture]
     public class InitializerTests
     {
-        [Test]
-        [TestCase(1, 0, 'N', North)]
-        public void PlaceRover_ConvertsOrientation(int x, int y, char inputDirection, CardinalDirection expectedOrientation)
+        private Initializer _initializer;
+        private Grid _grid;
+
+        [SetUp]
+        public void SetUp()
         {
-            var testInitializer = new Initializer();
-            var rover = testInitializer.PlaceRover(x, y, inputDirection, new Grid());
+            _initializer = new Initializer();
+            _grid = new Grid();
+        }
+
+        [Test]
+        [TestCase(1, 0, "N", N)]
+        [TestCase(1, 0, "n", N)]
+        public void PlaceRover_ConvertsOrientation(int x, int y, string inputDirection, CardinalDirection expectedOrientation)
+        {
+            var rover = _initializer.PlaceRover(x, y, inputDirection, _grid);
             var startingOrientation = rover.GetOrientation();
             Assert.That(startingOrientation, Is.EqualTo(expectedOrientation));
         }
@@ -21,8 +31,7 @@ namespace MarsRover.Tests
         [TestCase(1, 0)]
         public void PlaceRover_StoresLocation(int x, int y)
         {
-            var testInitializer = new Initializer();
-            var rover = testInitializer.PlaceRover(x, y, 'N', new Grid());
+            var rover = _initializer.PlaceRover(x, y, "N", _grid);
             var startingLocation = rover.GetLocation();
             var expectedLocation = new int[] { x, y };
             Assert.That(startingLocation, Is.EqualTo(expectedLocation));
@@ -31,11 +40,9 @@ namespace MarsRover.Tests
         [Test]
         [TestCase(-1, 0, "Placement point not on grid: -1, 0")]
         [TestCase(1000, 0, "Placement point not on grid: 1000, 0")]
-        public void PlaceRover_ThrowsException(int x, int y, string exceptionMessage)
+        public void PlaceRover_GivenPlacementOffGrid_ThrowsException(int x, int y, string exceptionMessage)
         {
-            var testInitializer = new Initializer();
-            var testGrid = new Grid();
-            Assert.Throws<ArgumentException>(() => { testInitializer.PlaceRover(x, y, 'N', testGrid); }, exceptionMessage);
+            Assert.Throws<ArgumentException>(() => { _initializer.PlaceRover(x, y, "N", _grid); }, exceptionMessage);
         }
     }
 }

@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandRunner.cs" />
-    <Compile Include="Command.cs" />
+    <Compile Include="CommandParser.cs" />
     <Compile Include="CardinalDirection.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="Action.cs" />

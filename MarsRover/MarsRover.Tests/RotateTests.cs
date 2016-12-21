@@ -18,11 +18,11 @@ namespace MarsRover.Tests
 
         private static IEnumerable<TestCaseData> RotateTestCases()
         {
-            yield return new TestCaseData(North, true, West);
-            yield return new TestCaseData(East, true, North);
-            yield return new TestCaseData(South, true, East);
-            yield return new TestCaseData(North, false, East);
-            yield return new TestCaseData(East, false, South);
+            yield return new TestCaseData(N, true, W);
+            yield return new TestCaseData(E, true, N);
+            yield return new TestCaseData(S, true, E);
+            yield return new TestCaseData(N, false, E);
+            yield return new TestCaseData(E, false, S);
         }
     }
 }

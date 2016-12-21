@@ -65,7 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandRunnerTests.cs" />
-    <Compile Include="CommandTests.cs" />
+    <Compile Include="CommandParserTests.cs" />
     <Compile Include="GridTests.cs" />
     <Compile Include="InitializerTests.cs" />
     <Compile Include="ObstacleReportTests.cs" />

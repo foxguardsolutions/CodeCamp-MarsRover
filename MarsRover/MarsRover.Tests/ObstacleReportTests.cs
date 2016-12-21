@@ -12,7 +12,7 @@ namespace MarsRover.Tests
         [TestCase(1, 1, "Obstacle encountered at point 1, 1. Movement terminated.")]
         public void ObstacleReport_WritesToConsole(int x, int y, string message)
         {
-            var obstacleLocation = new Position(x, y, CardinalDirection.North, new Grid());
+            var obstacleLocation = new Position(x, y, CardinalDirection.N, new Grid());
             var expectedReport = message + Environment.NewLine;
             var actualReport = ReportConsoleOutputToString(obstacleLocation);
             Assert.That(actualReport, Is.EqualTo(expectedReport));
@@ -22,10 +22,7 @@ namespace MarsRover.Tests
         {
             using (StringWriter consoleWriter = new StringWriter())
             {
-                var tempConsoleOutStore = Console.Out;
-                Console.SetOut(consoleWriter);
-                new ObstacleReport(inputPosition);
-                Console.SetOut(tempConsoleOutStore);
+                new ObstacleReport(inputPosition, consoleWriter);
                 return consoleWriter.ToString();
             }
         }

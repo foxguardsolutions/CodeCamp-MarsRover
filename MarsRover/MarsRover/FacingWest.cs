@@ -1,12 +1,26 @@
-﻿namespace MarsRover
+﻿using System;
+
+namespace MarsRover
 {
     public class FacingWest : IOrientation
     {
-        public Position Translate(Position position)
+        public Position Translate(Position position, bool isMovingForward)
         {
             var nextPosition = position.Clone();
-            nextPosition.Coordinates[0]--;
+            AdjustCoordinates(nextPosition, isMovingForward);
             return nextPosition;
+        }
+
+        private void AdjustCoordinates(Position nextPosition, bool isMovingForward)
+        {
+            if (isMovingForward)
+            {
+                nextPosition.Coordinates[0]--;
+            }
+            else
+            {
+                nextPosition.Coordinates[0]++;
+            }
         }
 
         public void Rotate(Rover contextRover, bool isTurningCounterclockwise)

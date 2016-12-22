@@ -26,16 +26,16 @@ namespace MarsRover
             _path.Add(startPosition);
         }
 
-        public void Move()
+        public void Move(bool isMovingForward)
         {
             var lastPosition = GetLocation();
-            var nextPosition = Translate(lastPosition);
+            var nextPosition = Translate(lastPosition, isMovingForward);
             _path.Add(nextPosition);
         }
 
-        private Position Translate(Position position)
+        private Position Translate(Position position, bool isMovingForward)
         {
-            return _state.Translate(position);
+            return _state.Translate(position, isMovingForward);
         }
 
         public Position GetLocation()

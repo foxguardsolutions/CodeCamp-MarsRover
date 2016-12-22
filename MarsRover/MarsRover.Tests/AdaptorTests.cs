@@ -19,22 +19,22 @@ namespace MarsRover.Tests
 
         [TestCaseSource(nameof(ExecuteTestCases))]
         public void RotateRover_ChangesOrientation(
-            int initialX, int initialY, char initialDirection, int finalX, int finalY, Type expectedOrientation, char[] command)
+            int initialX, int initialY, char initialDirection, int finalX, int finalY, Type expectedOrientation, char[] commands)
         {
             var rover = _initializer.PlaceRover(initialX, initialY, initialDirection, _grid);
             var adaptor = new Adaptor(rover);
-            adaptor.Execute(command);
+            adaptor.Execute(commands);
             var endOrientation = rover.GetOrientation();
             Assert.That(endOrientation, Is.EqualTo(expectedOrientation));
         }
 
         [TestCaseSource(nameof(ExecuteTestCases))]
         public void MoveRover_ChangesLocation(
-            int initialX, int initialY, char initialDirection, int finalX, int finalY, Type expectedOrientation, char[] command)
+            int initialX, int initialY, char initialDirection, int finalX, int finalY, Type expectedOrientation, char[] commands)
         {
             var rover = _initializer.PlaceRover(initialX, initialY, initialDirection, _grid);
             var adaptor = new Adaptor(rover);
-            adaptor.Execute(command);
+            adaptor.Execute(commands);
             var endCoordinates = rover.GetLocation().Coordinates;
             Assert.That(endCoordinates, Is.EqualTo(new int[] { finalX, finalY }));
         }

@@ -20,5 +20,16 @@ namespace MarsRover.Tests
             yield return new TestCaseData((ushort)0, (ushort)5, (ushort)999, (ushort)4);
             yield return new TestCaseData((ushort)0, (ushort)0, (ushort)999, (ushort)999);
         }
+
+        [TestCase((ushort)1, (ushort)2, 1, 2, true)]
+        [TestCase((ushort)1, (ushort)2, 1, 1, false)]
+        [TestCase((ushort)1000, (ushort)2, 1000, 2, false)]
+        public void HasObstacle_GivenPointWithoutObstacle_ReturnsFalse(
+            ushort addX, ushort addY, int checkX, int checkY, bool expectedValue)
+        {
+            var grid = new Grid();
+            grid.AddObstacle(addX, addY);
+            Assert.That(grid.HasObstacle(checkX, checkY), Is.EqualTo(expectedValue));
+        }
     }
 }

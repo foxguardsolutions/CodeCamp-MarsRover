@@ -53,9 +53,9 @@ namespace MarsRover
             return _state.GetType();
         }
 
-        public void Rotate()
+        public void Rotate(bool isTurningCounterclockwise)
         {
-            _state.Rotate(this);
+            _state.Rotate(this, isTurningCounterclockwise);
         }
     }
 }

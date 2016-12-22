@@ -3,6 +3,6 @@
     public interface IOrientation
     {
         Position Translate(Position position);
-        void Rotate(Rover rover);
+        void Rotate(Rover rover, bool isTurningCounterclockwise);
     }
 }

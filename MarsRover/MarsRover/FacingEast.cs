@@ -9,9 +9,16 @@
             return nextPosition;
         }
 
-        public void Rotate(Rover context)
+        public void Rotate(Rover contextRover, bool isTurningCounterclockwise)
         {
-            context.SetOrientation(new FacingNorth());
+            if (isTurningCounterclockwise)
+            {
+                contextRover.SetOrientation(new FacingNorth());
+            }
+            else
+            {
+                contextRover.SetOrientation(new FacingSouth());
+            }
         }
     }
 }

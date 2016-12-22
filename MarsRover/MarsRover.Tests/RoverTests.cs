@@ -18,7 +18,8 @@ namespace MarsRover.Tests
         }
 
         [TestCaseSource(nameof(MoveTestCases))]
-        public void GetLocation_AfterForwardMove_ReturnsNewCoordinates(int initialX, int initialY, int finalX, int finalY)
+        public void GetLocation_AfterForwardMove_ReturnsNewCoordinates(
+            int initialX, int initialY, int finalX, int finalY)
         {
             var testRover = new Rover(initialX, initialY, new FacingNorth());
             testRover.Move();
@@ -27,7 +28,8 @@ namespace MarsRover.Tests
         }
 
         [TestCaseSource(nameof(MoveTestCases))]
-        public void GetStartingLocation_AfterForwardMove_ReturnsStartingCoordinates(int initialX, int initialY, int finalX, int finalY)
+        public void GetStartingLocation_AfterForwardMove_ReturnsStartingCoordinates(
+            int initialX, int initialY, int finalX, int finalY)
         {
             var testRover = new Rover(initialX, initialY, new FacingNorth());
             testRover.Move();
@@ -43,7 +45,8 @@ namespace MarsRover.Tests
         }
 
         [TestCaseSource(nameof(NoRotationTestCases))]
-        public void GetOrientation_WithoutRotation_ReturnsInitialOrientation(IOrientation initialOrientation, Type expectedOrientationType)
+        public void GetOrientation_WithoutRotation_ReturnsInitialOrientation(
+            IOrientation initialOrientation, Type expectedOrientationType)
         {
             var testRover = new Rover(0, 0, initialOrientation);
             var finalOrientationType = testRover.GetOrientation();
@@ -57,18 +60,25 @@ namespace MarsRover.Tests
         }
 
         [TestCaseSource(nameof(RotationTestCases))]
-        public void GetOrientation_WithRotation_ReturnsNewOrientation(IOrientation initialOrientation, Type expectedOrientationType)
+        public void GetOrientation_WithRotation_ReturnsNewOrientation(
+            IOrientation initialOrientation, bool isTurningCounterclockwise, Type expectedOrientationType)
         {
             var testRover = new Rover(0, 0, initialOrientation);
-            testRover.Rotate();
+            testRover.Rotate(isTurningCounterclockwise);
             var finalOrientationType = testRover.GetOrientation();
             Assert.That(finalOrientationType, Is.EqualTo(expectedOrientationType));
         }
 
         private static IEnumerable<TestCaseData> RotationTestCases()
         {
-            yield return new TestCaseData(new FacingNorth(), typeof(FacingWest));
-            yield return new TestCaseData(new FacingEast(), typeof(FacingNorth));
+            yield return new TestCaseData(new FacingNorth(), true, typeof(FacingWest));
+            yield return new TestCaseData(new FacingEast(), true, typeof(FacingNorth));
+            yield return new TestCaseData(new FacingSouth(), true, typeof(FacingEast));
+            yield return new TestCaseData(new FacingWest(), true, typeof(FacingSouth));
+            yield return new TestCaseData(new FacingNorth(), false, typeof(FacingEast));
+            yield return new TestCaseData(new FacingEast(), false, typeof(FacingSouth));
+            yield return new TestCaseData(new FacingSouth(), false, typeof(FacingWest));
+            yield return new TestCaseData(new FacingWest(), false, typeof(FacingNorth));
         }
     }
 }

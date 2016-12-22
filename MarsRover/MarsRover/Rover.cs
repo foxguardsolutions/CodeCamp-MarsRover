@@ -8,10 +8,10 @@ namespace MarsRover
         private IOrientation _state;
         private List<Position> _path;
 
-        public Rover(int x, int y, IOrientation startingOrientation)
+        public Rover(int x, int y, IOrientation startingOrientation, Grid referenceGrid)
         {
             SetOrientation(startingOrientation);
-            InitializePath(x, y);
+            InitializePath(x, y, referenceGrid);
         }
 
         public void SetOrientation(IOrientation newOrientation)
@@ -19,11 +19,16 @@ namespace MarsRover
             _state = newOrientation;
         }
 
-        private void InitializePath(int x, int y)
+        private void InitializePath(int x, int y, Grid referenceGrid)
         {
             _path = new List<Position>();
-            var startPosition = new Position(x, y);
+            var startPosition = new Position(x, y, referenceGrid);
             _path.Add(startPosition);
+        }
+
+        public void Rotate(bool isTurningCounterclockwise)
+        {
+            _state.Rotate(this, isTurningCounterclockwise);
         }
 
         public void Move(bool isMovingForward)
@@ -51,11 +56,6 @@ namespace MarsRover
         public Type GetOrientation()
         {
             return _state.GetType();
-        }
-
-        public void Rotate(bool isTurningCounterclockwise)
-        {
-            _state.Rotate(this, isTurningCounterclockwise);
         }
     }
 }

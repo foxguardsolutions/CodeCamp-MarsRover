@@ -11,7 +11,7 @@ namespace MarsRover.Tests
         public void GetLocation_WithoutMovement_ReturnsInitialCoordinates(
             int initialX, int initialY, IOrientation initialOrientation, bool isMovingForward, int finalX, int finalY)
         {
-            var testRover = new Rover(initialX, initialY, initialOrientation);
+            var testRover = new Rover(initialX, initialY, initialOrientation, new Grid());
             var roverCoordinates = testRover.GetLocation().Coordinates;
             Assert.That(roverCoordinates, Is.EqualTo(new int[] { initialX, initialY }));
         }
@@ -20,7 +20,7 @@ namespace MarsRover.Tests
         public void GetLocation_AfterMove_ReturnsNewCoordinates(
             int initialX, int initialY, IOrientation initialOrientation, bool isMovingForward, int finalX, int finalY)
         {
-            var testRover = new Rover(initialX, initialY, initialOrientation);
+            var testRover = new Rover(initialX, initialY, initialOrientation, new Grid());
             testRover.Move(isMovingForward);
             var roverCoordinates = testRover.GetLocation().Coordinates;
             Assert.That(roverCoordinates, Is.EqualTo(new int[] { finalX, finalY }));
@@ -30,7 +30,7 @@ namespace MarsRover.Tests
         public void GetStartingLocation_AfterMove_ReturnsStartingCoordinates(
             int initialX, int initialY, IOrientation initialOrientation, bool isMovingForward, int finalX, int finalY)
         {
-            var testRover = new Rover(initialX, initialY, initialOrientation);
+            var testRover = new Rover(initialX, initialY, initialOrientation, new Grid());
             testRover.Move(isMovingForward);
             var roverStartCoordinates = testRover.GetStartingLocation().Coordinates;
             Assert.That(roverStartCoordinates, Is.EqualTo(new int[] { initialX, initialY }));
@@ -49,7 +49,7 @@ namespace MarsRover.Tests
         public void GetOrientation_WithoutRotation_ReturnsInitialOrientation(
             IOrientation initialOrientation, bool isTurningCounterclockwise, Type expectedOrientationType)
         {
-            var testRover = new Rover(0, 0, initialOrientation);
+            var testRover = new Rover(0, 0, initialOrientation, new Grid());
             expectedOrientationType = initialOrientation.GetType();
             var finalOrientationType = testRover.GetOrientation();
             Assert.That(finalOrientationType, Is.EqualTo(expectedOrientationType));
@@ -59,7 +59,7 @@ namespace MarsRover.Tests
         public void GetOrientation_WithRotation_ReturnsNewOrientation(
             IOrientation initialOrientation, bool isTurningCounterclockwise, Type expectedOrientationType)
         {
-            var testRover = new Rover(0, 0, initialOrientation);
+            var testRover = new Rover(0, 0, initialOrientation, new Grid());
             testRover.Rotate(isTurningCounterclockwise);
             var finalOrientationType = testRover.GetOrientation();
             Assert.That(finalOrientationType, Is.EqualTo(expectedOrientationType));

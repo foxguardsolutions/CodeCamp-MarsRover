@@ -53,6 +53,7 @@
     <Compile Include="FacingEast.cs" />
     <Compile Include="FacingSouth.cs" />
     <Compile Include="FacingWest.cs" />
+    <Compile Include="Grid.cs" />
     <Compile Include="IOrientation.cs" />
     <Compile Include="FacingNorth.cs" />
     <Compile Include="Position.cs" />

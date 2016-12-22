@@ -17,7 +17,7 @@ namespace MarsRover.Tests
         [TestCaseSource(nameof(TranslateTestCases))]
         public void Translate_ReturnsPositionWithCoordinates(int initialX, int initialY, bool isMovingForward, int finalX, int finalY)
         {
-            var initialPosition = new Position(initialX, initialY);
+            var initialPosition = new Position(initialX, initialY, new Grid());
             var finalPosition = _facingNorthState.Translate(initialPosition, isMovingForward);
             Assert.That(finalPosition.Coordinates, Is.EqualTo(new int[] { finalX, finalY }));
         }

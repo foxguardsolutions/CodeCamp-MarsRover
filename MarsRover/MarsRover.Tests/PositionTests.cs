@@ -10,7 +10,7 @@ namespace MarsRover.Tests
         [SetUp]
         public void SetUp()
         {
-            _position = new Position(1, 0);
+            _position = new Position(1, 0, new Grid());
         }
 
         [Test]

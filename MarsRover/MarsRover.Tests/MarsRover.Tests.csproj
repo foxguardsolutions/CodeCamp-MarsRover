@@ -68,6 +68,7 @@
     <Compile Include="FacingNorthTests.cs" />
     <Compile Include="FacingSouthTests.cs" />
     <Compile Include="FacingWestTests.cs" />
+    <Compile Include="GridTests.cs" />
     <Compile Include="RoverTests.cs" />
     <Compile Include="PositionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -15,11 +15,11 @@ namespace MarsRover
         {
             if (isMovingForward)
             {
-                nextPosition.Coordinates[0]--;
+                nextPosition.DecrementCoordinate(0);
             }
             else
             {
-                nextPosition.Coordinates[0]++;
+                nextPosition.IncrementCoordinate(0);
             }
         }
 

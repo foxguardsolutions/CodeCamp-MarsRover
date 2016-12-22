@@ -43,6 +43,8 @@ namespace MarsRover.Tests
             yield return new TestCaseData(0, 2, new FacingNorth(), false, 0, 1);
             yield return new TestCaseData(2, 3, new FacingEast(), true, 3, 3);
             yield return new TestCaseData(2, 3, new FacingEast(), false, 1, 3);
+            yield return new TestCaseData(1, 999, new FacingNorth(), true, 1, 0);
+            yield return new TestCaseData(1, 0, new FacingNorth(), false, 1, 999);
         }
 
         [TestCaseSource(nameof(RotationTestCases))]

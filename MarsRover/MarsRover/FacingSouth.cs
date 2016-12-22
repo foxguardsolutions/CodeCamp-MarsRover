@@ -13,11 +13,11 @@
         {
             if (isMovingForward)
             {
-                nextPosition.Coordinates[1]--;
+                nextPosition.DecrementCoordinate(1);
             }
             else
             {
-                nextPosition.Coordinates[1]++;
+                nextPosition.IncrementCoordinate(1);
             }
         }
 

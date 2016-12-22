@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace MarsRover.Tests
 {
@@ -35,6 +36,39 @@ namespace MarsRover.Tests
             newPosition.Coordinates[0]++;
             var oldCoordinates = _position.Coordinates;
             Assert.That(oldCoordinates, Is.EqualTo(new int[] { 1, 0 }));
+        }
+
+        [TestCaseSource(nameof(IncrementTestCases))]
+        public void IncrementCoordinate_IncreasesCoordinateValue(int initialX, int initialY, int coordinateIndex, int finalX, int finalY)
+        {
+            var position = new Position(initialX, initialY, new Grid());
+            position.IncrementCoordinate(coordinateIndex);
+            var newCoordinates = position.Coordinates;
+            Assert.That(newCoordinates, Is.EqualTo(new int[] { finalX, finalY }));
+        }
+
+        private static IEnumerable<TestCaseData> IncrementTestCases()
+        {
+            yield return new TestCaseData(1, 0, 0, 2, 0);
+            yield return new TestCaseData(1, 0, 1, 1, 1);
+            yield return new TestCaseData(1, 999, 1, 1, 0);
+        }
+
+        [TestCaseSource(nameof(DecrementTestCases))]
+        public void DecrementCoordinate_DecreasesCoordinateValue(int initialX, int initialY, int coordinateIndex, int finalX, int finalY)
+        {
+            var position = new Position(initialX, initialY, new Grid());
+            position.DecrementCoordinate(coordinateIndex);
+            var newCoordinates = position.Coordinates;
+            Assert.That(newCoordinates, Is.EqualTo(new int[] { finalX, finalY }));
+        }
+
+        private static IEnumerable<TestCaseData> DecrementTestCases()
+        {
+            yield return new TestCaseData(1, 0, 0, 0, 0);
+            yield return new TestCaseData(2, 0, 0, 1, 0);
+            yield return new TestCaseData(0, 2, 1, 0, 1);
+            yield return new TestCaseData(0, 2, 0, 999, 2);
         }
     }
 }

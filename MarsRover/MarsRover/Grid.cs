@@ -19,9 +19,10 @@ namespace MarsRover
             _ySize = (ySize == 0) ? DEFAULTSIZE : ySize;
         }
 
-        public ushort[] Size()
+        public ushort MaxCoordinate(int index)
         {
-            return new ushort[] { _xSize, _ySize };
+            var sizes = new ushort[] { _xSize, _ySize };
+            return (ushort)(sizes[index] - 1);
         }
     }
 }

@@ -9,6 +9,7 @@ namespace MarsRover
 
         public Position(int x, int y, Grid grid)
         {
+            grid.ValidatePoint(x, y);
             Coordinates = new int[] { x, y };
             _grid = grid;
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace MarsRover.Tests
@@ -36,6 +37,13 @@ namespace MarsRover.Tests
             newPosition.Coordinates[0]++;
             var oldCoordinates = _position.Coordinates;
             Assert.That(oldCoordinates, Is.EqualTo(new int[] { 1, 0 }));
+        }
+
+        [TestCase(0, 1000, "Point not on grid: 0, 1000")]
+        public void NewPosition_GivenInvalidCoordinates_ThrowsException(
+           int initialX, int initialY, string exceptionMessage)
+        {
+            Assert.Throws<ArgumentException>(() => { new Position(initialX, initialY, new Grid()); }, exceptionMessage);
         }
 
         [TestCaseSource(nameof(IncrementTestCases))]

@@ -5,6 +5,7 @@ namespace MarsRover
     public class Initializer
     {
         private const string INVALIDDIRECTION = "Could not parse direction from \"{0}\".";
+
         public Rover PlaceRover(int x, int y, char inputDirection, Grid grid)
         {
             var startingOrientation = ParseDirection(inputDirection);

@@ -4,10 +4,31 @@ namespace MarsRover
 {
     public class Initializer
     {
-        public Rover PlaceRover(int x, int y, char initialDirection, Grid grid)
+        private const string INVALIDDIRECTION = "Could not parse direction from \"{0}\".";
+        public Rover PlaceRover(int x, int y, char inputDirection, Grid grid)
         {
-            var startingOrientation = new FacingNorth();
+            var startingOrientation = ParseDirection(inputDirection);
             return new Rover(x, y, startingOrientation, grid);
+        }
+
+        private IOrientation ParseDirection(char candidate)
+        {
+            if (candidate == 'E')
+                return new FacingEast();
+            else if (candidate == 'N')
+                return new FacingNorth();
+            else if (candidate == 'W')
+                return new FacingWest();
+            else if (candidate == 'S')
+                return new FacingSouth();
+
+            return ReportInvalidDirection(candidate);
+        }
+
+        private IOrientation ReportInvalidDirection(char candidate)
+        {
+            var message = string.Format(INVALIDDIRECTION, candidate);
+            throw new ArgumentException(message);
         }
     }
 }

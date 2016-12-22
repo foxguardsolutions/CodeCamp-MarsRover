@@ -1,17 +1,60 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace MarsRover.Tests
 {
     [TestFixture]
     public class InitializerTests
     {
-        [Test]
-        public void PlaceRover_GivenValidPlacement_ReturnsRoverWithInitialValues()
+        private Initializer _initializer;
+        private Grid _grid;
+
+        [SetUp]
+        public void SetUp()
         {
-            var initializer = new Initializer();
-            var rover = initializer.PlaceRover(0, 0, 'N', new Grid());
+            _initializer = new Initializer();
+            _grid = new Grid();
+        }
+
+        [TestCaseSource(nameof(PlaceRoverTestCases))]
+        public void GetLocation_GivenValidRoverPlacement_ReturnsInitialCoordinates(
+            int initialX, int initialY, char initialDirection, Type expectedOrientation)
+        {
+            var rover = _initializer.PlaceRover(initialX, initialY, initialDirection, _grid);
             var coordinates = rover.GetLocation().Coordinates;
-            Assert.That(coordinates, Is.EqualTo(new int[] { 0, 0 }));
+            Assert.That(coordinates, Is.EqualTo(new int[] { initialX, initialY }));
+        }
+
+        [TestCaseSource(nameof(PlaceRoverTestCases))]
+        public void GetOrientation_GivenValidRoverPlacement_ReturnsPlacementOrientation(
+            int initialX, int initialY, char initialDirection, Type expectedOrientation)
+        {
+            var rover = _initializer.PlaceRover(initialX, initialY, initialDirection, _grid);
+            var finalOrientation = rover.GetOrientation();
+            Assert.That(finalOrientation, Is.EqualTo(expectedOrientation));
+        }
+
+        private static IEnumerable<TestCaseData> PlaceRoverTestCases()
+        {
+            yield return new TestCaseData(0, 0, 'N', typeof(FacingNorth));
+            yield return new TestCaseData(0, 0, 'E', typeof(FacingEast));
+            yield return new TestCaseData(0, 0, 'S', typeof(FacingSouth));
+            yield return new TestCaseData(0, 0, 'W', typeof(FacingWest));
+        }
+
+        [Test]
+        [TestCase(0, 0, 'F', "Could not parse direction from \"F\".")]
+        [TestCase(0, 0, '-', "Could not parse direction from \"-\".")]
+        public void PlaceRover_GivenInvalidParameters_ThrowsException(
+            int initialX, int initialY, char initialDirection, string exceptionMessage)
+        {
+            Assert.That(
+                () => { _initializer.PlaceRover(initialX, initialY, initialDirection, _grid); },
+                Throws.ArgumentException.With.Property("Message").EqualTo(exceptionMessage));
+            Assert.Throws<ArgumentException>(
+                () => { _initializer.PlaceRover(initialX, initialY, initialDirection, _grid); },
+                exceptionMessage);
         }
     }
 }

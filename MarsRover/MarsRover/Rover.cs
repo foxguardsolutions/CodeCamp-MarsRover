@@ -8,9 +8,9 @@ namespace MarsRover
         private IOrientation _state;
         private List<Position> _path;
 
-        public Rover(int x, int y)
+        public Rover(int x, int y, IOrientation startingOrientation)
         {
-            SetOrientation(new FacingNorth());
+            SetOrientation(startingOrientation);
             InitializePath(x, y);
         }
 
@@ -46,6 +46,16 @@ namespace MarsRover
         public Position GetStartingLocation()
         {
             return _path[0];
+        }
+
+        public Type GetOrientation()
+        {
+            return _state.GetType();
+        }
+
+        public void Rotate()
+        {
+            _state.Rotate(this);
         }
     }
 }

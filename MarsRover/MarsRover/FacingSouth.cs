@@ -8,5 +8,10 @@
             nextPosition.Coordinates[1]--;
             return nextPosition;
         }
+
+        public void Rotate(Rover context)
+        {
+            context.SetOrientation(new FacingEast());
+        }
     }
 }

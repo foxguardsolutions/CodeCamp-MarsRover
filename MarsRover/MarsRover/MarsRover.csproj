@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adaptor.cs" />
     <Compile Include="FacingEast.cs" />
     <Compile Include="FacingSouth.cs" />
     <Compile Include="FacingWest.cs" />

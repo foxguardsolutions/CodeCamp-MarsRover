@@ -10,7 +10,7 @@ namespace MarsRover
 
         public Rover(int x, int y)
         {
-            SetOrientation(new NorthFacing());
+            SetOrientation(new FacingNorth());
             InitializePath(x, y);
         }
 

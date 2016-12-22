@@ -1,11 +1,11 @@
 ﻿namespace MarsRover
 {
-    public class FacingNorth : IOrientation
+    public class FacingEast : IOrientation
     {
         public Position Translate(Position position)
         {
             var nextPosition = position.Clone();
-            nextPosition.Coordinates[1]++;
+            nextPosition.Coordinates[0]++;
             return nextPosition;
         }
     }

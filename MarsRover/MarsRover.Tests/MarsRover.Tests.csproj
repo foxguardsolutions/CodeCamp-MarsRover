@@ -64,7 +64,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NorthFacingTests.cs" />
+    <Compile Include="FacingEastTests.cs" />
+    <Compile Include="FacingNorthTests.cs" />
+    <Compile Include="FacingSouthTests.cs" />
+    <Compile Include="FacingWestTests.cs" />
     <Compile Include="RoverTests.cs" />
     <Compile Include="PositionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

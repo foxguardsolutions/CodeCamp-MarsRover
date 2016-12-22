@@ -5,23 +5,25 @@ namespace MarsRover
 {
     public class Rover
     {
+        private IOrientation _state;
         private List<Position> _path;
 
         public Rover(int x, int y)
         {
+            SetOrientation(new NorthFacing());
+            InitializePath(x, y);
+        }
+
+        public void SetOrientation(IOrientation newOrientation)
+        {
+            _state = newOrientation;
+        }
+
+        private void InitializePath(int x, int y)
+        {
             _path = new List<Position>();
             var startPosition = new Position(x, y);
             _path.Add(startPosition);
-        }
-
-        public Position GetLocation()
-        {
-            return _path[_path.Count - 1];
-        }
-
-        public Position GetStartingLocation()
-        {
-            return _path[0];
         }
 
         public void Move()
@@ -33,9 +35,17 @@ namespace MarsRover
 
         private Position Translate(Position position)
         {
-            var nextPosition = position.Clone();
-            nextPosition.Coordinates[1]++;
-            return nextPosition;
+            return _state.Translate(position);
+        }
+
+        public Position GetLocation()
+        {
+            return _path[_path.Count - 1];
+        }
+
+        public Position GetStartingLocation()
+        {
+            return _path[0];
         }
     }
 }

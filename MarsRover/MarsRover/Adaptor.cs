@@ -21,6 +21,10 @@ namespace MarsRover
                 _rover.Rotate(true);
             else if (command == 'r')
                 _rover.Rotate(false);
+            else if (command == 'f')
+                _rover.Move(true);
+            else
+                _rover.Move(false);
         }
     }
 }

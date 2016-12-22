@@ -1,18 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MarsRover
 {
     public class Adaptor
     {
+        private const string INVALIDCOMMAND = "Could not parse command from \"{0}\".";
         private Rover _rover;
 
         public Adaptor(Rover rover)
         {
             _rover = rover;
+        }
+
+        public void Execute(char[] commands)
+        {
+            foreach (char command in commands)
+            {
+                Execute(command);
+            }
         }
 
         public void Execute(char command)
@@ -23,8 +28,16 @@ namespace MarsRover
                 _rover.Rotate(false);
             else if (command == 'f')
                 _rover.Move(true);
-            else
+            else if (command == 'b')
                 _rover.Move(false);
+            else
+                ReportInvalidCommand(command);
+        }
+
+        private void ReportInvalidCommand(char command)
+        {
+            var message = string.Format(INVALIDCOMMAND, command);
+            throw new ArgumentException(message);
         }
     }
 }

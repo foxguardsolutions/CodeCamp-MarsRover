@@ -1,58 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
+using Moq;
 using NUnit.Framework;
+using Ploeh.AutoFixture;
 
 namespace MarsRover.Tests
 {
     [TestFixture]
-    public class InitializerTests
+    public class InitializerTests : BaseTests
     {
+        private Mock<IConsoleWriter> _mockConsoleWriter;
+        private IConsoleWriter _consoleWriter;
         private Initializer _initializer;
         private Grid _grid;
+        private int _initialX;
+        private int _initialY;
+        private CardinalDirection _initialDirection;
 
         [SetUp]
         public void SetUp()
         {
+            _mockConsoleWriter = new Mock<IConsoleWriter>();
+            _consoleWriter = _mockConsoleWriter.Object;
+
             _initializer = new Initializer();
-            _grid = new Grid();
+            _grid = new Grid(_consoleWriter);
+            _initialX = Fixture.Create<int>();
+            _initialY = Fixture.Create<int>();
+            _initialDirection = Fixture.Create<CardinalDirection>();
+        }
+
+        [Test]
+        public void GetCoordinates_AfterRoverPlacement_ReturnsInitialCoordinates()
+        {
+            var rover = _initializer.PlaceRover(_initialX, _initialY, _initialDirection, _grid, _consoleWriter);
+            var initialLocation = rover.GetCoordinates();
+            Assert.That(initialLocation, Is.EqualTo(new Point(_initialX, _initialY)));
         }
 
         [TestCaseSource(nameof(PlaceRoverTestCases))]
-        public void GetLocation_GivenValidRoverPlacement_ReturnsInitialCoordinates(
-            int initialX, int initialY, char initialDirection, Type expectedOrientation)
+        public void GetMovementFrameOfReference_GivenValidInitialDirection_ReturnsPlacementFrameOfReference(
+            CardinalDirection initialDirection, Type expectedFrameOfReference)
         {
-            var rover = _initializer.PlaceRover(initialX, initialY, initialDirection, _grid);
-            var coordinates = rover.GetLocation().Coordinates;
-            Assert.That(coordinates, Is.EqualTo(new int[] { initialX, initialY }));
-        }
-
-        [TestCaseSource(nameof(PlaceRoverTestCases))]
-        public void GetOrientation_GivenValidRoverPlacement_ReturnsPlacementOrientation(
-            int initialX, int initialY, char initialDirection, Type expectedOrientation)
-        {
-            var rover = _initializer.PlaceRover(initialX, initialY, initialDirection, _grid);
-            var finalOrientation = rover.GetOrientation();
-            Assert.That(finalOrientation, Is.EqualTo(expectedOrientation));
+            var rover = _initializer.PlaceRover(_initialX, _initialY, initialDirection, _grid, _consoleWriter);
+            var initialFrameOfReference = rover.GetMovementFrameOfReference();
+            Assert.That(initialFrameOfReference, Is.TypeOf(expectedFrameOfReference));
         }
 
         private static IEnumerable<TestCaseData> PlaceRoverTestCases()
         {
-            yield return new TestCaseData(0, 0, 'N', typeof(FacingNorth));
-            yield return new TestCaseData(0, 0, 'E', typeof(FacingEast));
-            yield return new TestCaseData(0, 0, 'S', typeof(FacingSouth));
-            yield return new TestCaseData(0, 0, 'W', typeof(FacingWest));
+            yield return new TestCaseData(CardinalDirection.NORTH, typeof(MovementWhenFacingNorth));
+            yield return new TestCaseData(CardinalDirection.EAST, typeof(MovementWhenFacingEast));
+            yield return new TestCaseData(CardinalDirection.SOUTH, typeof(MovementWhenFacingSouth));
+            yield return new TestCaseData(CardinalDirection.WEST, typeof(MovementWhenFacingWest));
         }
 
-        [TestCase(0, 0, 'F', "Could not parse direction from \"F\".")]
-        [TestCase(0, 0, '-', "Could not parse direction from \"-\".")]
-        [TestCase(1000, 0, 'N', "Point not on grid: 1000, 0")]
-        [TestCase(0, 1000, 'N', "Point not on grid: 0, 1000")]
-        public void PlaceRover_GivenInvalidParameters_ThrowsException(
-            int initialX, int initialY, char initialDirection, string exceptionMessage)
+        [Test]
+        public void PlaceRover_GivenInitialPointOffGrid_WritesMessageToConsole()
         {
-            Assert.Throws<ArgumentException>(
-                () => { _initializer.PlaceRover(initialX, initialY, initialDirection, _grid); },
-                exceptionMessage);
+            var initialX = Fixture.Create<int>();
+            var initialY = Grid.DEFAULTSIZE;
+            var expectedMessage = $"Point not on grid: {initialX}, {initialY}";
+
+            _initializer.PlaceRover(initialX, initialY, _initialDirection, _grid, _consoleWriter);
+            _mockConsoleWriter.Verify(x => x.WriteLine(expectedMessage), Times.Once());
         }
     }
 }

@@ -1,45 +1,39 @@
-﻿using System;
-
-namespace MarsRover
+﻿namespace MarsRover
 {
     public class Position
     {
-        public int[] Coordinates { get; set; }
+        private Point _coordinates;
         private Grid _grid;
 
-        public Position(int x, int y, Grid grid)
+        public Position(Point coordinates, Grid grid)
         {
-            grid.ValidatePoint(x, y);
-            Coordinates = new int[] { x, y };
+            grid.ValidatePoint(coordinates);
+            _coordinates = coordinates;
             _grid = grid;
         }
 
-        public Position Clone()
+        public Point GetCoordinates()
         {
-            return new Position(Coordinates[0], Coordinates[1], _grid);
+            return _coordinates;
         }
 
-        public void IncrementCoordinate(int index)
+        public Position IncrementCoordinate(int index)
         {
             var maxCoordinate = _grid.MaxCoordinate(index);
-            if (Coordinates[index] == maxCoordinate)
-                Coordinates[index] = 0;
-            else
-                Coordinates[index]++;
+            var nextCoordinates = _coordinates.Increment(index, maxCoordinate);
+            return new Position(nextCoordinates, _grid);
         }
 
-        public void DecrementCoordinate(int index)
+        public Position DecrementCoordinate(int index)
         {
             var maxCoordinate = _grid.MaxCoordinate(index);
-            if (Coordinates[index] == 0)
-                Coordinates[index] = maxCoordinate;
-            else
-                Coordinates[index]--;
+            var nextCoordinates = _coordinates.Decrement(index, maxCoordinate);
+            return new Position(nextCoordinates, _grid);
         }
 
-        internal bool IsClearOfObstacles()
+        public bool IsClearOfObstacles()
         {
-            return !_grid.HasObstacle(Coordinates[0], Coordinates[1]);
+            return !_grid.HasObstacleAt(_coordinates);
         }
     }
 }

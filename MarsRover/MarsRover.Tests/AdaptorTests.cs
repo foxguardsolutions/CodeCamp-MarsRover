@@ -1,82 +1,92 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
+using Ploeh.AutoFixture;
+using static MarsRover.Command;
 
 namespace MarsRover.Tests
 {
     [TestFixture]
-    public class AdaptorTests
+    public class AdaptorTests : BaseTests
     {
-        private Initializer _initializer;
         private Grid _grid;
+        private Rover _rover;
+        private Adaptor _adaptor;
+        private Point _initialLocation;
+        private IMovementFrameOfReference _initialFrameOfReference;
 
         [SetUp]
         public void SetUp()
         {
-            _initializer = new Initializer();
-            _grid = new Grid();
+            _grid = Fixture.Create<Grid>();
+
+            var initializer = Fixture.Create<Initializer>();
+            var initialX = Fixture.Create<int>();
+            var initialY = Fixture.Create<int>();
+            var initialDirection = Fixture.Create<CardinalDirection>();
+            var consoleWriter = Fixture.Create<IConsoleWriter>();
+
+            _rover = initializer.PlaceRover(initialX, initialY, initialDirection, _grid, consoleWriter);
+            _adaptor = new Adaptor(_rover);
+
+            _initialLocation = _rover.GetCoordinates();
+            _initialFrameOfReference = _rover.GetMovementFrameOfReference();
         }
 
-        [TestCaseSource(nameof(ExecuteWithoutObstaclesTestCases))]
-        public void RotateRover_ChangesOrientation(
-            int initialX, int initialY, char initialDirection, int finalX, int finalY, Type expectedOrientation, char[] commands)
+        [TestCaseSource(nameof(RotateTestCases))]
+        public void Execute_GivenRotateCommands_ChangesRoverFrameOfReference(Command[] commands)
         {
-            var rover = _initializer.PlaceRover(initialX, initialY, initialDirection, _grid);
-            var adaptor = new Adaptor(rover);
-            adaptor.Execute(commands);
-            var endOrientation = rover.GetOrientation();
-            Assert.That(endOrientation, Is.EqualTo(expectedOrientation));
+            _adaptor.Execute(commands);
+            var finalFrameOfReference = _rover.GetMovementFrameOfReference();
+
+            Assert.That(finalFrameOfReference, Is.Not.TypeOf(_initialFrameOfReference.GetType()));
         }
 
-        [TestCaseSource(nameof(ExecuteWithoutObstaclesTestCases))]
-        public void MoveRover_OnGridWithoutObstacles_ChangesLocation(
-            int initialX, int initialY, char initialDirection, int finalX, int finalY, Type expectedOrientation, char[] commands)
+        private static IEnumerable<TestCaseData> RotateTestCases()
         {
-            var rover = _initializer.PlaceRover(initialX, initialY, initialDirection, _grid);
-            var adaptor = new Adaptor(rover);
-            adaptor.Execute(commands);
-            var endCoordinates = rover.GetLocation().Coordinates;
-            Assert.That(endCoordinates, Is.EqualTo(new int[] { finalX, finalY }));
+            yield return new TestCaseData(new Command[] { LEFT });
+            yield return new TestCaseData(new Command[] { RIGHT });
         }
 
-        private static IEnumerable<TestCaseData> ExecuteWithoutObstaclesTestCases()
+        [TestCaseSource(nameof(TranslateTestCases))]
+        public void Execute_GivenTranslateCommandsOnGridWithoutObstacles_ChangesRoverLocation(Command[] commands)
         {
-            yield return new TestCaseData(0, 0, 'N', 0, 0, typeof(FacingWest), new char[] { 'l' });
-            yield return new TestCaseData(0, 0, 'N', 0, 0, typeof(FacingEast), new char[] { 'r' });
-            yield return new TestCaseData(0, 0, 'W', 0, 0, typeof(FacingSouth), new char[] { 'l' });
-            yield return new TestCaseData(0, 0, 'N', 0, 1, typeof(FacingNorth), new char[] { 'f' });
-            yield return new TestCaseData(0, 1, 'N', 0, 0, typeof(FacingNorth), new char[] { 'b' });
+            _adaptor.Execute(commands);
+            var finalLocation = _rover.GetCoordinates();
+
+            Assert.That(finalLocation, Is.Not.EqualTo(_initialLocation));
         }
 
-        [TestCase(new char[] { 'x' }, "Could not parse command from \"x\".")]
-        [TestCase(new char[] { '!' }, "Could not parse command from \"!\".")]
-        public void PlaceRover_GivenInvalidParameters_ThrowsException(char[] command, string exceptionMessage)
+        private static IEnumerable<TestCaseData> TranslateTestCases()
         {
-            var rover = _initializer.PlaceRover(0, 0, 'N', _grid);
-            var adaptor = new Adaptor(rover);
-            Assert.Throws<ArgumentException>(() => { adaptor.Execute(command); }, exceptionMessage);
+            yield return new TestCaseData(new Command[] { FORWARD });
+            yield return new TestCaseData(new Command[] { BACK });
         }
 
-        [TestCaseSource(nameof(ExecuteWithObstaclesTestCases))]
-        public void MoveRover_OnGridWithObstacles_ChangesLocation(
-            int initialX, int initialY, char initialDirection, ushort obstacleX, ushort obstacleY, int finalX, int finalY, Type expectedOrientation, char[] commands)
+        [Test]
+        public void ExecuteCommands_GivenObstructedRover_DoesNotMoveOrRotate()
         {
-            var rover = _initializer.PlaceRover(initialX, initialY, initialDirection, _grid);
-            _grid.AddObstacle(obstacleX, obstacleY);
-            var adaptor = new Adaptor(rover);
-            adaptor.Execute(commands);
-            var endCoordinates = rover.GetLocation().Coordinates;
-            Assert.That(endCoordinates, Is.EqualTo(new int[] { finalX, finalY }));
+            ObstructRover();
+            var commands = new Command[] { LEFT, FORWARD };
+
+            _adaptor.Execute(commands);
+
+            AssertRoverDidNotMoveOrRotate();
         }
 
-        private static IEnumerable<TestCaseData> ExecuteWithObstaclesTestCases()
+        private void ObstructRover()
         {
-            yield return new TestCaseData(0, 0, 'E', (ushort)5, (ushort)5, 0, 2, typeof(FacingNorth), new char[] { 'l', 'f', 'f' })
-                .SetName("ExecuteCommands_GivenObstaclePlacementOffRoverPath_MovesRoverToExpectedFinalCoordinates");
-            yield return new TestCaseData(0, 0, 'E', (ushort)0, (ushort)2, 0, 1, typeof(FacingNorth), new char[] { 'l', 'f', 'f' })
-                .SetName("ExecuteCommands_GivenObstacleOnLastPositionOfRoverPath_MovesRoverUpToObstacle");
-            yield return new TestCaseData(0, 0, 'E', (ushort)0, (ushort)2, 0, 1, typeof(FacingNorth), new char[] { 'l', 'f', 'f', 'r', 'f' })
-                .SetName("ExecuteCommands_GivenObstacleInMiddleOfRoverPath_MovesRoverUpToObstacle");
+            var obstacle = new Rover(_rover.GetCoordinates(), _rover.GetMovementFrameOfReference(), _grid, Fixture.Create<IConsoleWriter>());
+            obstacle.MoveForward();
+            _grid.AddObstacle(obstacle.GetCoordinates());
+            _rover.MoveForward();
+        }
+
+        private void AssertRoverDidNotMoveOrRotate()
+        {
+            var finalLocation = _rover.GetCoordinates();
+            var finalFrameOfReference = _rover.GetMovementFrameOfReference();
+            Assert.That(finalLocation, Is.EqualTo(_initialLocation));
+            Assert.That(finalFrameOfReference, Is.TypeOf(_initialFrameOfReference.GetType()));
         }
     }
 }

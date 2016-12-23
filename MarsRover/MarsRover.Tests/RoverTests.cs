@@ -1,118 +1,123 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Moq;
 using NUnit.Framework;
+using Ploeh.AutoFixture;
 
 namespace MarsRover.Tests
 {
     [TestFixture]
-    public class RoverTests
+    public class RoverTests : BaseTests
     {
+        private Mock<IConsoleWriter> _mockConsoleWriter;
+        private IConsoleWriter _consoleWriter;
         private Grid _grid;
+        private Point _startingPoint;
+        private Rover _rover;
 
         [SetUp]
         public void SetUp()
         {
-            _grid = new Grid();
+            _mockConsoleWriter = new Mock<IConsoleWriter>();
+            _consoleWriter = _mockConsoleWriter.Object;
+            _grid = Fixture.Create<Grid>();
+            _startingPoint = Fixture.Create<Point>();
+            var initialFrameOfReference = Fixture.Create<IMovementFrameOfReference>();
+            _rover = new Rover(_startingPoint, initialFrameOfReference, _grid, _consoleWriter);
         }
 
-        [TestCaseSource(nameof(MoveTestCases))]
-        public void GetLocation_WithoutMovement_ReturnsInitialCoordinates(
-            int initialX, int initialY, IOrientation initialOrientation, bool isMovingForward, int finalX, int finalY)
+        [TestCaseSource(nameof(NoRotationTestCases))]
+        public void GetMovementFrameOfReference_WithoutRotation_ReturnsInitialFrameOfReference(IMovementFrameOfReference initialFrameOfReference)
         {
-            var testRover = new Rover(initialX, initialY, initialOrientation, _grid);
-            var roverCoordinates = testRover.GetLocation().Coordinates;
-            Assert.That(roverCoordinates, Is.EqualTo(new int[] { initialX, initialY }));
+            _rover.SetFrameOfReference(initialFrameOfReference);
+            var expectedFrameOfReference = initialFrameOfReference.GetType();
+
+            var finalFrameOfReferenceType = _rover.GetMovementFrameOfReference().GetType();
+
+            Assert.That(finalFrameOfReferenceType, Is.EqualTo(expectedFrameOfReference));
         }
 
-        [TestCaseSource(nameof(MoveTestCases))]
-        public void GetLocation_AfterMove_ReturnsNewCoordinates(
-            int initialX, int initialY, IOrientation initialOrientation, bool isMovingForward, int finalX, int finalY)
+        private static IEnumerable<TestCaseData> NoRotationTestCases()
         {
-            var testRover = new Rover(initialX, initialY, initialOrientation, _grid);
-            testRover.Move(isMovingForward);
-            var roverCoordinates = testRover.GetLocation().Coordinates;
-            Assert.That(roverCoordinates, Is.EqualTo(new int[] { finalX, finalY }));
+            yield return new TestCaseData(new MovementWhenFacingNorth());
+            yield return new TestCaseData(new MovementWhenFacingEast());
+            yield return new TestCaseData(new MovementWhenFacingSouth());
+            yield return new TestCaseData(new MovementWhenFacingWest());
         }
 
-        [TestCaseSource(nameof(MoveTestCases))]
-        public void GetStartingLocation_AfterMove_ReturnsStartingCoordinates(
-            int initialX, int initialY, IOrientation initialOrientation, bool isMovingForward, int finalX, int finalY)
+        [Test]
+        public void GetCoordinates_WithoutMovement_ReturnsInitialCoordinates()
         {
-            var testRover = new Rover(initialX, initialY, initialOrientation, _grid);
-            testRover.Move(isMovingForward);
-            var roverStartCoordinates = testRover.GetStartingLocation().Coordinates;
-            Assert.That(roverStartCoordinates, Is.EqualTo(new int[] { initialX, initialY }));
+            var roverCoordinates = _rover.GetCoordinates();
+            Assert.That(roverCoordinates, Is.EqualTo(_startingPoint));
         }
 
-        private static IEnumerable<TestCaseData> MoveTestCases()
+        [Test]
+        public void MoveForward_WithoutObstacle_DisplaysCorrectMovementBehavior()
         {
-            yield return new TestCaseData(1, 0, new FacingNorth(), true, 1, 1);
-            yield return new TestCaseData(2, 3, new FacingNorth(), true, 2, 4);
-            yield return new TestCaseData(0, 2, new FacingNorth(), false, 0, 1);
-            yield return new TestCaseData(2, 3, new FacingEast(), true, 3, 3);
-            yield return new TestCaseData(2, 3, new FacingEast(), false, 1, 3);
-            yield return new TestCaseData(1, 999, new FacingNorth(), true, 1, 0);
-            yield return new TestCaseData(1, 0, new FacingNorth(), false, 1, 999);
+            _rover.MoveForward();
+            AssertRoverDisplaysCorrectMovementBehavior();
         }
 
-        [TestCaseSource(nameof(RotationTestCases))]
-        public void GetOrientation_WithoutRotation_ReturnsInitialOrientation(
-            IOrientation initialOrientation, bool isTurningCounterclockwise, Type expectedOrientationType)
+        [Test]
+        public void MoveBackward_WithoutObstacle_DisplaysCorrectMovementBehavior()
         {
-            var testRover = new Rover(0, 0, initialOrientation, _grid);
-            expectedOrientationType = initialOrientation.GetType();
-            var finalOrientationType = testRover.GetOrientation();
-            Assert.That(finalOrientationType, Is.EqualTo(expectedOrientationType));
+            _rover.MoveBackward();
+            AssertRoverDisplaysCorrectMovementBehavior();
         }
 
-        [TestCaseSource(nameof(RotationTestCases))]
-        public void GetOrientation_WithRotation_ReturnsNewOrientation(
-            IOrientation initialOrientation, bool isTurningCounterclockwise, Type expectedOrientationType)
+        private void AssertRoverDisplaysCorrectMovementBehavior()
         {
-            var testRover = new Rover(0, 0, initialOrientation, _grid);
-            testRover.Rotate(isTurningCounterclockwise);
-            var finalOrientationType = testRover.GetOrientation();
-            Assert.That(finalOrientationType, Is.EqualTo(expectedOrientationType));
+            AssertMoved();
+            AssertObstructionStatusIs(false);
         }
 
-        private static IEnumerable<TestCaseData> RotationTestCases()
+        [Test]
+        public void Move_WithObstacleInNextPosition_DisplaysObstacleEncounterBehavior()
         {
-            yield return new TestCaseData(new FacingNorth(), true, typeof(FacingWest));
-            yield return new TestCaseData(new FacingEast(), true, typeof(FacingNorth));
-            yield return new TestCaseData(new FacingSouth(), true, typeof(FacingEast));
-            yield return new TestCaseData(new FacingWest(), true, typeof(FacingSouth));
-            yield return new TestCaseData(new FacingNorth(), false, typeof(FacingEast));
-            yield return new TestCaseData(new FacingEast(), false, typeof(FacingSouth));
-            yield return new TestCaseData(new FacingSouth(), false, typeof(FacingWest));
-            yield return new TestCaseData(new FacingWest(), false, typeof(FacingNorth));
+            var obstacleCoordinates = GetNextRoverPosition();
+
+            _grid.AddObstacle(obstacleCoordinates);
+            _rover.MoveForward();
+
+            AssertRoverDisplaysObstacleEncounterBehavior(obstacleCoordinates);
         }
 
-        [TestCaseSource(nameof(MoveWithObstacleTestCases))]
-        public void IsObstructed_AfterMovementOnGridWithObstacle_ReturnsObstructionStatus(
-            ushort obstacleX, ushort obstacleY, bool expectedStatus, int finalX, int finalY)
+        private Point GetNextRoverPosition()
         {
-            var testRover = new Rover(0, 0, new FacingNorth(), _grid);
-            _grid.AddObstacle(obstacleX, obstacleY);
-            testRover.Move(true);
-            var isObstructed = testRover.IsObstructed();
-            Assert.That(isObstructed, Is.EqualTo(expectedStatus));
+            var fakeRover = new Rover(_rover.GetCoordinates(), _rover.GetMovementFrameOfReference(), _grid, _consoleWriter);
+            fakeRover.MoveForward();
+            return fakeRover.GetCoordinates();
         }
 
-        [TestCaseSource(nameof(MoveWithObstacleTestCases))]
-        public void GetLocation_AfterMovementOnGridWithObstacle_ReturnsExpectedLocation(
-            ushort obstacleX, ushort obstacleY, bool expectedStatus, int finalX, int finalY)
+        private void AssertRoverDisplaysObstacleEncounterBehavior(Point obstacleCoordinates)
         {
-            var testRover = new Rover(0, 0, new FacingNorth(), _grid);
-            _grid.AddObstacle(obstacleX, obstacleY);
-            testRover.Move(true);
-            var roverCoordinates = testRover.GetLocation().Coordinates;
-            Assert.That(roverCoordinates, Is.EqualTo(new int[] { finalX, finalY }));
+            AssertDidntMove();
+            AssertObstructionStatusIs(true);
+            AssertCreatedObstacleReport(obstacleCoordinates);
         }
 
-        private static IEnumerable<TestCaseData> MoveWithObstacleTestCases()
+        private void AssertMoved()
         {
-            yield return new TestCaseData((ushort)0, (ushort)1, true, 0, 0);
-            yield return new TestCaseData((ushort)5, (ushort)5, false, 0, 1);
+            var roverCoordinates = _rover.GetCoordinates();
+            Assert.That(roverCoordinates, Is.Not.EqualTo(_startingPoint));
+        }
+
+        private void AssertDidntMove()
+        {
+            var roverCoordinates = _rover.GetCoordinates();
+            Assert.That(roverCoordinates, Is.EqualTo(_startingPoint));
+        }
+
+        private void AssertObstructionStatusIs(bool expectedObstructionStatus)
+        {
+            var isObstructed = _rover.IsObstructed();
+            Assert.That(isObstructed, Is.EqualTo(expectedObstructionStatus));
+        }
+
+        private void AssertCreatedObstacleReport(Point obstacleCoordinates)
+        {
+            var expectedMessage = $"Obstacle encountered at position ({obstacleCoordinates}). Movement terminated.";
+            _mockConsoleWriter.Verify(x => x.WriteLine(expectedMessage), Times.Once());
         }
     }
 }

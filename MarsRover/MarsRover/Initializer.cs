@@ -1,35 +1,23 @@
-﻿using System;
-
-namespace MarsRover
+﻿namespace MarsRover
 {
     public class Initializer
     {
-        private const string INVALIDDIRECTION = "Could not parse direction from \"{0}\".";
-
-        public Rover PlaceRover(int x, int y, char inputDirection, Grid grid)
+        public Rover PlaceRover(int x, int y, CardinalDirection inputDirection, Grid grid, IConsoleWriter consoleWriter)
         {
-            var startingOrientation = ParseDirection(inputDirection);
-            return new Rover(x, y, startingOrientation, grid);
+            var startingFrameOfReference = ParseDirection(inputDirection);
+            var startingCoordinates = new Point(x, y);
+            return new Rover(startingCoordinates, startingFrameOfReference, grid, consoleWriter);
         }
 
-        private IOrientation ParseDirection(char candidate)
+        private static IMovementFrameOfReference ParseDirection(CardinalDirection direction)
         {
-            if (candidate == 'E')
-                return new FacingEast();
-            else if (candidate == 'N')
-                return new FacingNorth();
-            else if (candidate == 'W')
-                return new FacingWest();
-            else if (candidate == 'S')
-                return new FacingSouth();
-
-            return ReportInvalidDirection(candidate);
-        }
-
-        private IOrientation ReportInvalidDirection(char candidate)
-        {
-            var message = string.Format(INVALIDDIRECTION, candidate);
-            throw new ArgumentException(message);
+            if (direction == CardinalDirection.EAST)
+                return new MovementWhenFacingEast();
+            if (direction == CardinalDirection.WEST)
+                return new MovementWhenFacingWest();
+            if (direction == CardinalDirection.SOUTH)
+                return new MovementWhenFacingSouth();
+            return new MovementWhenFacingNorth();
         }
     }
 }

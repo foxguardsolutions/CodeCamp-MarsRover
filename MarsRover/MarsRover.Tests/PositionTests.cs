@@ -1,82 +1,159 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Moq;
 using NUnit.Framework;
+using Ploeh.AutoFixture;
 
 namespace MarsRover.Tests
 {
     [TestFixture]
-    public class PositionTests
+    public class PositionTests : BaseTests
     {
+        private int _x;
+        private int _y;
+        private Point _point;
+        private Grid _grid;
         private Position _position;
 
         [SetUp]
         public void SetUp()
         {
-            _position = new Position(1, 0, new Grid());
+            GenerateCoordinatesNotOnEdgeOfGrid();
+            _point = new Point(_x, _y);
+            _grid = Fixture.Create<Grid>();
+            _position = new Position(_point, _grid);
+        }
+
+        private void GenerateCoordinatesNotOnEdgeOfGrid()
+        {
+            var lowEdgeCoordinate = 0;
+            var highEdgeCoordinate = Grid.DEFAULTSIZE - 1;
+            Fixture.Customizations.Add(
+                new RandomNumericSequenceGenerator(lowEdgeCoordinate + 1, highEdgeCoordinate - 1));
+            _x = Fixture.Create<int>();
+            _y = Fixture.Create<int>();
         }
 
         [Test]
-        public void CoordinatesGetter_ReturnsInitialCoordinates()
+        public void GetCoordinates_ReturnsInitialCoordinates()
         {
-            var coordinates = _position.Coordinates;
-            Assert.That(coordinates, Is.EqualTo(new int[] { 1, 0 }));
+            var coordinates = _position.GetCoordinates();
+            Assert.That(coordinates, Is.EqualTo(_point));
         }
 
         [Test]
-        public void Clone_WithoutChangingClonedPosition_ReturnsInitialCoordinates()
+        public void IsClearOfObstacles_GivenNoObstacle_ReturnsTrue()
         {
-            var newPosition = _position.Clone();
-            var newCoordinates = newPosition.Coordinates;
-            Assert.That(newCoordinates, Is.EqualTo(new int[] { 1, 0 }));
+            var isClear = _position.IsClearOfObstacles();
+            Assert.That(isClear, Is.True);
         }
 
         [Test]
-        public void Clone_WithChangeToClonedPosition_DoesNotChangeInitialCoordinates()
+        public void IsClearOfObstacles_AfterPlacingObstacleAtDifferentPosition_ReturnsTrue()
         {
-            var newPosition = _position.Clone();
-            newPosition.Coordinates[0]++;
-            var oldCoordinates = _position.Coordinates;
-            Assert.That(oldCoordinates, Is.EqualTo(new int[] { 1, 0 }));
+            var otherPosition = _position.IncrementCoordinate(0);
+            _grid.AddObstacle(otherPosition.GetCoordinates());
+            var isClear = _position.IsClearOfObstacles();
+            Assert.That(isClear, Is.True);
         }
 
-        [TestCase(0, 1000, "Point not on grid: 0, 1000")]
-        public void NewPosition_GivenInvalidCoordinates_ThrowsException(
-           int initialX, int initialY, string exceptionMessage)
+        [Test]
+        public void IsClearOfObstacles_AfterPlacingObstacleAtSamePosition_ReturnsFalse()
         {
-            Assert.Throws<ArgumentException>(() => { new Position(initialX, initialY, new Grid()); }, exceptionMessage);
+            _grid.AddObstacle(_position.GetCoordinates());
+            var isClear = _position.IsClearOfObstacles();
+            Assert.That(isClear, Is.False);
         }
 
-        [TestCaseSource(nameof(IncrementTestCases))]
-        public void IncrementCoordinate_IncreasesCoordinateValue(int initialX, int initialY, int coordinateIndex, int finalX, int finalY)
+        [Test]
+        public void NewPosition_GivenInvalidCoordinates_WritesMessageToConsole()
         {
-            var position = new Position(initialX, initialY, new Grid());
-            position.IncrementCoordinate(coordinateIndex);
-            var newCoordinates = position.Coordinates;
-            Assert.That(newCoordinates, Is.EqualTo(new int[] { finalX, finalY }));
+            var pointNotOnGrid = GivenPointOffGrid();
+            var expectedMessage = $"Point not on grid: {pointNotOnGrid}";
+            var mockConsoleWriter = new Mock<IConsoleWriter>();
+            new Position(pointNotOnGrid, new Grid(mockConsoleWriter.Object));
+            mockConsoleWriter.Verify(x => x.WriteLine(expectedMessage), Times.Once());
         }
 
-        private static IEnumerable<TestCaseData> IncrementTestCases()
+        private Point GivenPointOffGrid()
         {
-            yield return new TestCaseData(1, 0, 0, 2, 0);
-            yield return new TestCaseData(1, 0, 1, 1, 1);
-            yield return new TestCaseData(1, 999, 1, 1, 0);
+            var coordinateOutsideGridLimits = Grid.DEFAULTSIZE + Fixture.Create<int>();
+            Fixture.Register(() => coordinateOutsideGridLimits);
+            return Fixture.Create<Point>();
         }
 
-        [TestCaseSource(nameof(DecrementTestCases))]
-        public void DecrementCoordinate_DecreasesCoordinateValue(int initialX, int initialY, int coordinateIndex, int finalX, int finalY)
+        [Test]
+        public void IncrementXCoordinate_GivenPositionNotOnEdgeOfGrid_ReturnsPositionWithIncrementedXCoordinate()
         {
-            var position = new Position(initialX, initialY, new Grid());
-            position.DecrementCoordinate(coordinateIndex);
-            var newCoordinates = position.Coordinates;
-            Assert.That(newCoordinates, Is.EqualTo(new int[] { finalX, finalY }));
+            var coordinateIndex = 0;
+            var expectedFinalPoint = new Point(_x + 1, _y);
+
+            var newPosition = _position.IncrementCoordinate(coordinateIndex);
+            var newCoordinates = newPosition.GetCoordinates();
+
+            Assert.That(newCoordinates, Is.EqualTo(expectedFinalPoint));
         }
 
-        private static IEnumerable<TestCaseData> DecrementTestCases()
+        [Test]
+        public void IncrementYCoordinate_GivenPositionNotOnEdgeOfGrid_ReturnsPositionWithIncrementedYCoordinate()
         {
-            yield return new TestCaseData(1, 0, 0, 0, 0);
-            yield return new TestCaseData(2, 0, 0, 1, 0);
-            yield return new TestCaseData(0, 2, 1, 0, 1);
-            yield return new TestCaseData(0, 2, 0, 999, 2);
+            var coordinateIndex = 1;
+            var expectedFinalPoint = new Point(_x, _y + 1);
+
+            var newPosition = _position.IncrementCoordinate(coordinateIndex);
+            var newCoordinates = newPosition.GetCoordinates();
+
+            Assert.That(newCoordinates, Is.EqualTo(expectedFinalPoint));
+        }
+
+        [Test]
+        public void IncrementCoordinate_GivenPositionOnLargerCoordinateEdgeOfGrid_ReturnsPositionWithZeroCoordinateValue()
+        {
+            var coordinateIndex = 1;
+            var initialPoint = new Point(_x, Grid.DEFAULTSIZE - 1);
+            var initialPosition = new Position(initialPoint, _grid);
+            var expectedFinalPoint = new Point(_x, 0);
+
+            var newPosition = initialPosition.IncrementCoordinate(coordinateIndex);
+            var newCoordinates = newPosition.GetCoordinates();
+
+            Assert.That(newCoordinates, Is.EqualTo(expectedFinalPoint));
+        }
+
+        [Test]
+        public void DecrementXCoordinate_GivenPositionNotOnEdgeOfGrid_ReturnsPositionWithDecrementedXCoordinate()
+        {
+            var coordinateIndex = 0;
+            var expectedFinalPoint = new Point(_x - 1, _y);
+
+            var newPosition = _position.DecrementCoordinate(coordinateIndex);
+            var newCoordinates = newPosition.GetCoordinates();
+
+            Assert.That(newCoordinates, Is.EqualTo(expectedFinalPoint));
+        }
+
+        [Test]
+        public void DecrementYCoordinate_GivenPositionNotOnEdgeOfGrid_ReturnsPositionWithDecrementedYCoordinate()
+        {
+            var coordinateIndex = 1;
+            var expectedFinalPoint = new Point(_x, _y - 1);
+
+            var newPosition = _position.DecrementCoordinate(coordinateIndex);
+            var newCoordinates = newPosition.GetCoordinates();
+
+            Assert.That(newCoordinates, Is.EqualTo(expectedFinalPoint));
+        }
+
+        [Test]
+        public void DecrementCoordinate_GivenPositionOnZeroCoordinateEdgeOfGrid_ReturnsPositionWithMaximumCoordinateValue()
+        {
+            var coordinateIndex = 1;
+            var initialPoint = new Point(_x, 0);
+            var initialPosition = new Position(initialPoint, _grid);
+            var expectedFinalPoint = new Point(_x, Grid.DEFAULTSIZE - 1);
+
+            var newPosition = initialPosition.DecrementCoordinate(coordinateIndex);
+            var newCoordinates = newPosition.GetCoordinates();
+
+            Assert.That(newCoordinates, Is.EqualTo(expectedFinalPoint));
         }
     }
 }

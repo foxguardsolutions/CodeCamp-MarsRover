@@ -1,35 +1,88 @@
-﻿using System.Collections.Generic;
+﻿using Moq;
 using NUnit.Framework;
+using Ploeh.AutoFixture;
 
 namespace MarsRover.Tests
 {
     [TestFixture]
-    public class GridTests
+    public class GridTests : BaseTests
     {
-        [TestCaseSource(nameof(NewGridTests))]
-        public void Size_ReturnsInitialValues(ushort inputX, ushort inputY, ushort expectedX, ushort expectedY)
+        private Mock<IConsoleWriter> _mockConsoleWriter;
+        private Point _obstacleLocation;
+        private Grid _grid;
+
+        [SetUp]
+        public void SetUp()
         {
-            var grid = new Grid(inputX, inputY);
-            var size = new ushort[] { grid.MaxCoordinate(0), grid.MaxCoordinate(1) };
-            Assert.That(size, Is.EqualTo(new ushort[] { expectedX, expectedY }));
+            _mockConsoleWriter = new Mock<IConsoleWriter>();
+
+            _obstacleLocation = Fixture.Create<Point>();
+            _grid = new Grid(_mockConsoleWriter.Object);
         }
 
-        private static IEnumerable<TestCaseData> NewGridTests()
+        [Test]
+        public void MaxCoordinate_GivenPositiveSizeValues_ReturnsOneLessThanEnteredSize()
         {
-            yield return new TestCaseData((ushort)10, (ushort)5, (ushort)9, (ushort)4);
-            yield return new TestCaseData((ushort)0, (ushort)5, (ushort)999, (ushort)4);
-            yield return new TestCaseData((ushort)0, (ushort)0, (ushort)999, (ushort)999);
+            var sizeX = Fixture.Create<ushort>();
+            var sizeY = Fixture.Create<ushort>();
+            var expectedMaxCoordinates = new[] { (ushort)(sizeX - 1), (ushort)(sizeY - 1) };
+            var grid = new Grid(sizeX, sizeY, _mockConsoleWriter.Object);
+
+            var maxValues = new[] { grid.MaxCoordinate(0), grid.MaxCoordinate(1) };
+
+            Assert.That(maxValues, Is.EqualTo(expectedMaxCoordinates));
         }
 
-        [TestCase((ushort)1, (ushort)2, 1, 2, true)]
-        [TestCase((ushort)1, (ushort)2, 1, 1, false)]
-        [TestCase((ushort)1000, (ushort)2, 1000, 2, false)]
-        public void HasObstacle_AfterObstaclePlacement_Returns(
-            ushort addX, ushort addY, int checkX, int checkY, bool expectedValue)
+        [Test]
+        public void MaxCoordinate_GivenSizeValuesEqualToZero_ReturnsDefaultSizeMinusOne()
         {
-            var grid = new Grid();
-            grid.AddObstacle(addX, addY);
-            Assert.That(grid.HasObstacle(checkX, checkY), Is.EqualTo(expectedValue));
+            var sizeX = (ushort)0;
+            var sizeY = (ushort)0;
+            var expectedMaxCoordinates = new ushort[] { Grid.DEFAULTSIZE - 1, Grid.DEFAULTSIZE - 1 };
+            var grid = new Grid(sizeX, sizeY, _mockConsoleWriter.Object);
+
+            var maxValues = new[] { grid.MaxCoordinate(0), grid.MaxCoordinate(1) };
+
+            Assert.That(maxValues, Is.EqualTo(expectedMaxCoordinates));
+        }
+
+        [Test]
+        public void HasObstacleAt_WithObstacleLocationSameAsInspectionLocation_ReturnsTrue()
+        {
+            _grid.AddObstacle(_obstacleLocation);
+
+            var hasObstacle = _grid.HasObstacleAt(_obstacleLocation);
+
+            Assert.That(hasObstacle, Is.True);
+        }
+
+        [Test]
+        public void HasObstacleAt_WithObstacleLocationDifferentFromInspectionLocation_ReturnsFalse()
+        {
+            var locationClearOfObstacles = _obstacleLocation.Increment(0, Grid.DEFAULTSIZE - 1);
+            _grid.AddObstacle(_obstacleLocation);
+
+            var hasObstacle = _grid.HasObstacleAt(locationClearOfObstacles);
+
+            Assert.That(hasObstacle, Is.False);
+        }
+
+        [Test]
+        public void ValidatePoint_GivenCoordinatesOffGrid_DoesNotWriteToConsole()
+        {
+            var point = GivenPointOffGrid();
+            var expectedMessage = $"Point not on grid: {point}";
+
+            _grid.ValidatePoint(point);
+
+            _mockConsoleWriter.Verify(x => x.WriteLine(expectedMessage), Times.Once());
+        }
+
+        private Point GivenPointOffGrid()
+        {
+            var coordinateOutsideGridLimits = Grid.DEFAULTSIZE + Fixture.Create<int>();
+            Fixture.Register(() => coordinateOutsideGridLimits);
+            return Fixture.Create<Point>();
         }
     }
 }

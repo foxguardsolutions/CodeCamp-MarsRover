@@ -51,13 +51,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adaptor.cs" />
-    <Compile Include="FacingEast.cs" />
-    <Compile Include="FacingSouth.cs" />
-    <Compile Include="FacingWest.cs" />
+    <Compile Include="CardinalDirection.cs" />
+    <Compile Include="Command.cs" />
+    <Compile Include="ConsoleWriter.cs" />
+    <Compile Include="Point.cs" />
+    <Compile Include="MovementWhenFacingEast.cs" />
+    <Compile Include="IConsoleWriter.cs" />
+    <Compile Include="MovementWhenFacingSouth.cs" />
+    <Compile Include="MovementWhenFacingWest.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="Initializer.cs" />
-    <Compile Include="IOrientation.cs" />
-    <Compile Include="FacingNorth.cs" />
+    <Compile Include="IMovementFrameOfReference.cs" />
+    <Compile Include="MovementWhenFacingNorth.cs" />
+    <Compile Include="ObstacleReport.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rover.cs" />

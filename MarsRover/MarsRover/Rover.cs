@@ -1,66 +1,84 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace MarsRover
 {
     public class Rover
     {
-        private IOrientation _state;
+        private IMovementFrameOfReference _movement;
         private List<Position> _path;
         private bool _isObstructed;
+        private IConsoleWriter _consoleWriter;
 
-        public Rover(int x, int y, IOrientation startingOrientation, Grid referenceGrid)
+        public Rover(Point coordinates, IMovementFrameOfReference startingFrameOfReference, Grid referenceGrid, IConsoleWriter consoleWriter)
         {
-            SetOrientation(startingOrientation);
-            InitializePath(x, y, referenceGrid);
+            SetFrameOfReference(startingFrameOfReference);
+            InitializePath(coordinates, referenceGrid);
+            _consoleWriter = consoleWriter;
         }
 
-        public void SetOrientation(IOrientation newOrientation)
+        public void SetFrameOfReference(IMovementFrameOfReference newMovementFrameOfReference)
         {
-            _state = newOrientation;
+            _movement = newMovementFrameOfReference;
         }
 
-        private void InitializePath(int x, int y, Grid referenceGrid)
+        private void InitializePath(Point coordinates, Grid referenceGrid)
         {
             _path = new List<Position>();
-            var startPosition = new Position(x, y, referenceGrid);
+            var startPosition = new Position(coordinates, referenceGrid);
             _path.Add(startPosition);
         }
 
-        public void Rotate(bool isTurningCounterclockwise)
+        public void RotateCounterclockwise()
         {
-            _state.Rotate(this, isTurningCounterclockwise);
+            _movement.RotateCounterclockwise(this);
         }
 
-        public void Move(bool isMovingForward)
+        public void RotateClockwise()
+        {
+            _movement.RotateClockwise(this);
+        }
+
+        public IMovementFrameOfReference GetMovementFrameOfReference()
+        {
+            return _movement;
+        }
+
+        public void MoveForward()
         {
             var lastPosition = GetLocation();
-            var nextPosition = Translate(lastPosition, isMovingForward);
-            var canMove = nextPosition.IsClearOfObstacles();
-            if (canMove)
-                _path.Add(nextPosition);
-            else
-                _isObstructed = true;
+            var nextPosition = _movement.MoveForward(lastPosition);
+            MoveTo(nextPosition);
         }
 
-        private Position Translate(Position position, bool isMovingForward)
+        public void MoveBackward()
         {
-            return _state.Translate(position, isMovingForward);
+            var lastPosition = GetLocation();
+            var nextPosition = _movement.MoveBackward(lastPosition);
+            MoveTo(nextPosition);
         }
 
-        public Position GetLocation()
+        private void MoveTo(Position position)
+        {
+            var canMove = position.IsClearOfObstacles();
+            if (canMove)
+            {
+                _path.Add(position);
+            }
+            else
+            {
+                _isObstructed = true;
+                new ObstacleReport(position, _consoleWriter);
+            }
+        }
+
+        public Point GetCoordinates()
+        {
+            return GetLocation().GetCoordinates();
+        }
+
+        private Position GetLocation()
         {
             return _path[_path.Count - 1];
-        }
-
-        public Position GetStartingLocation()
-        {
-            return _path[0];
-        }
-
-        public Type GetOrientation()
-        {
-            return _state.GetType();
         }
 
         public bool IsObstructed()

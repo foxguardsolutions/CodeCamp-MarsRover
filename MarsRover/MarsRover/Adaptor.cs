@@ -1,10 +1,9 @@
-﻿using System;
+﻿using static MarsRover.Command;
 
 namespace MarsRover
 {
     public class Adaptor
     {
-        private const string INVALIDCOMMAND = "Could not parse command from \"{0}\".";
         private Rover _rover;
 
         public Adaptor(Rover rover)
@@ -12,35 +11,27 @@ namespace MarsRover
             _rover = rover;
         }
 
-        public void Execute(char[] commands)
+        public void Execute(Command[] commands)
         {
-            foreach (char command in commands)
+            foreach (var command in commands)
             {
-                Execute(command);
-
-                if (_rover.IsObstructed())
-                    break;
+                if (!_rover.IsObstructed())
+                {
+                    Execute(command);
+                }
             }
         }
 
-        private void Execute(char command)
+        private void Execute(Command command)
         {
-            if (command == 'l')
-                _rover.Rotate(true);
-            else if (command == 'r')
-                _rover.Rotate(false);
-            else if (command == 'f')
-                _rover.Move(true);
-            else if (command == 'b')
-                _rover.Move(false);
-            else
-                ReportInvalidCommand(command);
-        }
-
-        private void ReportInvalidCommand(char command)
-        {
-            var message = string.Format(INVALIDCOMMAND, command);
-            throw new ArgumentException(message);
+            if (command == LEFT)
+                _rover.RotateClockwise();
+            else if (command == RIGHT)
+                _rover.RotateCounterclockwise();
+            else if (command == FORWARD)
+                _rover.MoveForward();
+            else if (command == BACK)
+                _rover.MoveBackward();
         }
     }
 }

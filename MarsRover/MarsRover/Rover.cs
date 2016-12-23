@@ -7,6 +7,7 @@ namespace MarsRover
     {
         private IOrientation _state;
         private List<Position> _path;
+        private bool _isObstructed;
 
         public Rover(int x, int y, IOrientation startingOrientation, Grid referenceGrid)
         {
@@ -35,7 +36,11 @@ namespace MarsRover
         {
             var lastPosition = GetLocation();
             var nextPosition = Translate(lastPosition, isMovingForward);
-            _path.Add(nextPosition);
+            var canMove = nextPosition.IsClearOfObstacles();
+            if (canMove)
+                _path.Add(nextPosition);
+            else
+                _isObstructed = true;
         }
 
         private Position Translate(Position position, bool isMovingForward)
@@ -56,6 +61,11 @@ namespace MarsRover
         public Type GetOrientation()
         {
             return _state.GetType();
+        }
+
+        public bool IsObstructed()
+        {
+            return _isObstructed;
         }
     }
 }

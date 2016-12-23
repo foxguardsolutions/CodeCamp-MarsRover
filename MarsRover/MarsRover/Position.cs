@@ -36,5 +36,10 @@ namespace MarsRover
             else
                 Coordinates[index]--;
         }
+
+        internal bool IsClearOfObstacles()
+        {
+            return !_grid.HasObstacle(Coordinates[0], Coordinates[1]);
+        }
     }
 }

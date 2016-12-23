@@ -7,11 +7,19 @@ namespace MarsRover.Tests
     [TestFixture]
     public class RoverTests
     {
+        private Grid _grid;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _grid = new Grid();
+        }
+
         [TestCaseSource(nameof(MoveTestCases))]
         public void GetLocation_WithoutMovement_ReturnsInitialCoordinates(
             int initialX, int initialY, IOrientation initialOrientation, bool isMovingForward, int finalX, int finalY)
         {
-            var testRover = new Rover(initialX, initialY, initialOrientation, new Grid());
+            var testRover = new Rover(initialX, initialY, initialOrientation, _grid);
             var roverCoordinates = testRover.GetLocation().Coordinates;
             Assert.That(roverCoordinates, Is.EqualTo(new int[] { initialX, initialY }));
         }
@@ -20,7 +28,7 @@ namespace MarsRover.Tests
         public void GetLocation_AfterMove_ReturnsNewCoordinates(
             int initialX, int initialY, IOrientation initialOrientation, bool isMovingForward, int finalX, int finalY)
         {
-            var testRover = new Rover(initialX, initialY, initialOrientation, new Grid());
+            var testRover = new Rover(initialX, initialY, initialOrientation, _grid);
             testRover.Move(isMovingForward);
             var roverCoordinates = testRover.GetLocation().Coordinates;
             Assert.That(roverCoordinates, Is.EqualTo(new int[] { finalX, finalY }));
@@ -30,7 +38,7 @@ namespace MarsRover.Tests
         public void GetStartingLocation_AfterMove_ReturnsStartingCoordinates(
             int initialX, int initialY, IOrientation initialOrientation, bool isMovingForward, int finalX, int finalY)
         {
-            var testRover = new Rover(initialX, initialY, initialOrientation, new Grid());
+            var testRover = new Rover(initialX, initialY, initialOrientation, _grid);
             testRover.Move(isMovingForward);
             var roverStartCoordinates = testRover.GetStartingLocation().Coordinates;
             Assert.That(roverStartCoordinates, Is.EqualTo(new int[] { initialX, initialY }));
@@ -51,7 +59,7 @@ namespace MarsRover.Tests
         public void GetOrientation_WithoutRotation_ReturnsInitialOrientation(
             IOrientation initialOrientation, bool isTurningCounterclockwise, Type expectedOrientationType)
         {
-            var testRover = new Rover(0, 0, initialOrientation, new Grid());
+            var testRover = new Rover(0, 0, initialOrientation, _grid);
             expectedOrientationType = initialOrientation.GetType();
             var finalOrientationType = testRover.GetOrientation();
             Assert.That(finalOrientationType, Is.EqualTo(expectedOrientationType));
@@ -61,7 +69,7 @@ namespace MarsRover.Tests
         public void GetOrientation_WithRotation_ReturnsNewOrientation(
             IOrientation initialOrientation, bool isTurningCounterclockwise, Type expectedOrientationType)
         {
-            var testRover = new Rover(0, 0, initialOrientation, new Grid());
+            var testRover = new Rover(0, 0, initialOrientation, _grid);
             testRover.Rotate(isTurningCounterclockwise);
             var finalOrientationType = testRover.GetOrientation();
             Assert.That(finalOrientationType, Is.EqualTo(expectedOrientationType));
@@ -77,6 +85,18 @@ namespace MarsRover.Tests
             yield return new TestCaseData(new FacingEast(), false, typeof(FacingSouth));
             yield return new TestCaseData(new FacingSouth(), false, typeof(FacingWest));
             yield return new TestCaseData(new FacingWest(), false, typeof(FacingNorth));
+        }
+
+        [TestCase((ushort)0, (ushort)1, true)]
+        [TestCase((ushort)5, (ushort)5, false)]
+        public void IsObstructed_AfterMovementOnGridWithObstacle_ReturnsObstructionStatus(
+            ushort obstacleX, ushort obstacleY, bool expectedStatus)
+        {
+            var testRover = new Rover(0, 0, new FacingNorth(), _grid);
+            _grid.AddObstacle(obstacleX, obstacleY);
+            testRover.Move(true);
+            var isObstructed = testRover.IsObstructed();
+            Assert.That(isObstructed, Is.EqualTo(expectedStatus));
         }
     }
 }

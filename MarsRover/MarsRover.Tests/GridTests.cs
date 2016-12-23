@@ -24,7 +24,7 @@ namespace MarsRover.Tests
         [TestCase((ushort)1, (ushort)2, 1, 2, true)]
         [TestCase((ushort)1, (ushort)2, 1, 1, false)]
         [TestCase((ushort)1000, (ushort)2, 1000, 2, false)]
-        public void HasObstacle_GivenPointWithoutObstacle_ReturnsFalse(
+        public void HasObstacle_AfterObstaclePlacement_Returns(
             ushort addX, ushort addY, int checkX, int checkY, bool expectedValue)
         {
             var grid = new Grid();

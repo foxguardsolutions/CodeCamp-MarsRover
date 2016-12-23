@@ -17,10 +17,13 @@ namespace MarsRover
             foreach (char command in commands)
             {
                 Execute(command);
+
+                if (_rover.IsObstructed())
+                    break;
             }
         }
 
-        public void Execute(char command)
+        private void Execute(char command)
         {
             if (command == 'l')
                 _rover.Rotate(true);

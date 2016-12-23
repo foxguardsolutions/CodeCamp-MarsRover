@@ -87,16 +87,32 @@ namespace MarsRover.Tests
             yield return new TestCaseData(new FacingWest(), false, typeof(FacingNorth));
         }
 
-        [TestCase((ushort)0, (ushort)1, true)]
-        [TestCase((ushort)5, (ushort)5, false)]
+        [TestCaseSource(nameof(MoveWithObstacleTestCases))]
         public void IsObstructed_AfterMovementOnGridWithObstacle_ReturnsObstructionStatus(
-            ushort obstacleX, ushort obstacleY, bool expectedStatus)
+            ushort obstacleX, ushort obstacleY, bool expectedStatus, int finalX, int finalY)
         {
             var testRover = new Rover(0, 0, new FacingNorth(), _grid);
             _grid.AddObstacle(obstacleX, obstacleY);
             testRover.Move(true);
             var isObstructed = testRover.IsObstructed();
             Assert.That(isObstructed, Is.EqualTo(expectedStatus));
+        }
+
+        [TestCaseSource(nameof(MoveWithObstacleTestCases))]
+        public void GetLocation_AfterMovementOnGridWithObstacle_ReturnsExpectedLocation(
+            ushort obstacleX, ushort obstacleY, bool expectedStatus, int finalX, int finalY)
+        {
+            var testRover = new Rover(0, 0, new FacingNorth(), _grid);
+            _grid.AddObstacle(obstacleX, obstacleY);
+            testRover.Move(true);
+            var roverCoordinates = testRover.GetLocation().Coordinates;
+            Assert.That(roverCoordinates, Is.EqualTo(new int[] { finalX, finalY }));
+        }
+
+        private static IEnumerable<TestCaseData> MoveWithObstacleTestCases()
+        {
+            yield return new TestCaseData((ushort)0, (ushort)1, true, 0, 0);
+            yield return new TestCaseData((ushort)5, (ushort)5, false, 0, 1);
         }
     }
 }

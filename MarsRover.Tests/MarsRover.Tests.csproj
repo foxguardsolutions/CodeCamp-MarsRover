@@ -72,6 +72,8 @@
     <Compile Include="Tests.cs" />
     <Compile Include="Vehicles\Commands\MoveBackwardCommandTests.cs" />
     <Compile Include="Vehicles\Commands\MoveForwardCommandTests.cs" />
+    <Compile Include="Vehicles\Commands\TurnLeftCommandTests.cs" />
+    <Compile Include="Vehicles\Commands\TurnRightCommandTests.cs" />
     <Compile Include="Vehicles\RoverInputProcessorTests.cs" />
     <Compile Include="Vehicles\RoverTests.cs" />
   </ItemGroup>

@@ -22,5 +22,9 @@ namespace MarsRover.Vehicles
         {
             Coordinates = coordinates;
         }
+
+        public void TurnLeft() => Direction.TurnLeft(this);
+        
+        public void TurnRight() => Direction.TurnRight(this);
     }
 }

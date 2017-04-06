@@ -4,6 +4,7 @@ using MarsRover.Vehicles;
 using MarsRover.Vehicles.Commands;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,6 +22,28 @@ namespace MarsRover.Tests.Vehicles
         {
             _count = Fixture.Create<int>();
             _roverInputProcessor = new RoverInputProcessor(Rover);
+        }
+
+        [TestCaseSource(nameof(CardinalDirections))]
+        public void ExecuteCommands_GivenTurnLeftNTimes_TurnsRoverLeftNTimes(CardinalDirection cardinalDirection)
+        {
+            GivenRoverFacingDirectionNMovementCommands(cardinalDirection, MovementCommand.Left, _count);
+            var expected = GetDirectionTypeFromTurningLeftNTimes(cardinalDirection, _count);
+
+            _roverInputProcessor.ExecuteCommands(_commands);
+
+            Assert.That(Rover.Direction, Is.TypeOf(expected));
+        }
+
+        [TestCaseSource(nameof(CardinalDirections))]
+        public void ExecuteCommands_GivenRoverFacingDirectionTurnRightNTimes_TurnsRoverRightNTimes(CardinalDirection cardinalDirection)
+        {
+            GivenRoverFacingDirectionNMovementCommands(cardinalDirection, MovementCommand.Right, _count);
+            var expected = GetDirectionTypeFromTurningRightNTimes(cardinalDirection, _count);
+
+            _roverInputProcessor.ExecuteCommands(_commands);
+
+            Assert.That(Rover.Direction, Is.TypeOf(expected));
         }
 
         [TestCaseSource(nameof(CardinalDirections))]
@@ -61,6 +84,22 @@ namespace MarsRover.Tests.Vehicles
                 coordinates = GetNextCoordinatesInOppositeDirection(grid, coordinates, cardinalDirection);
 
             return coordinates;
+        }
+
+        private Type GetDirectionTypeFromTurningLeftNTimes(CardinalDirection cardinalDirection, int count)
+        {
+            for (int i = 0; i < count; i++)
+                cardinalDirection = cardinalDirection.GetDirectionToTheLeft();
+
+            return DirectionFactory.GetDirection(cardinalDirection, Grid).GetType();
+        }
+
+        private Type GetDirectionTypeFromTurningRightNTimes(CardinalDirection cardinalDirection, int count)
+        {
+            for (int i = 0; i < count; i++)
+                cardinalDirection = cardinalDirection.GetDirectionToTheRight();
+
+            return DirectionFactory.GetDirection(cardinalDirection, Grid).GetType();
         }
 
         private void GivenRoverFacingDirectionNMovementCommands(CardinalDirection cardinalDirection,

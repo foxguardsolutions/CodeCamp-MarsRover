@@ -33,5 +33,21 @@ namespace MarsRover.Tests.Directions
 
             Assert.That(Rover.Coordinates, Is.EqualTo(expected));
         }
+
+        [Test]
+        public void TurnLeft_GivenRover_TurnsRoverWest()
+        {
+            _direction.TurnLeft(Rover);
+            
+            Assert.That(Rover.Direction, Is.TypeOf<WestDirection>());
+        }
+
+        [Test]
+        public void TurnRight_GivenRover_TurnsRoverEast()
+        {
+            _direction.TurnRight(Rover);
+            
+            Assert.That(Rover.Direction, Is.TypeOf<EastDirection>());
+        }
     }
 }

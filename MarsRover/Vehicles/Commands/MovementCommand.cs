@@ -3,6 +3,8 @@
     public enum MovementCommand
     {
         Backward,
-        Forward
+        Forward,
+        Left,
+        Right
     }
 }

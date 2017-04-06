@@ -31,8 +31,12 @@ namespace MarsRover.Vehicles
             {
                 case MovementCommand.Backward:
                     return new MoveBackwardCommand(Rover);
-                default:
+                case MovementCommand.Forward:
                     return new MoveForwardCommand(Rover);
+                case MovementCommand.Left:
+                    return new TurnLeftCommand(Rover);
+                default:
+                    return new TurnRightCommand(Rover);
             }
         }
     }

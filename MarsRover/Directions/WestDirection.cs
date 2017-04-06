@@ -7,6 +7,8 @@ namespace MarsRover.Directions
     {
         private IGrid _grid;
 
+        public CardinalDirection CardinalDirection => CardinalDirection.West;
+
         public WestDirection(IGrid grid)
         {
             _grid = grid;
@@ -22,6 +24,16 @@ namespace MarsRover.Directions
         {
             var newCoordinates = _grid.GetNextCoordinatesWest(rover.Coordinates);
             rover.MoveTo(newCoordinates);
+        }
+
+        public void TurnLeft(Rover rover)
+        {
+            rover.Direction = DirectionFactory.GetDirection(CardinalDirection.GetDirectionToTheLeft(), _grid);
+        }
+
+        public void TurnRight(Rover rover)
+        {
+            rover.Direction = DirectionFactory.GetDirection(CardinalDirection.GetDirectionToTheRight(), _grid);
         }
     }
 }

@@ -2,6 +2,7 @@
 using MarsRover.Grids;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
+using System;
 
 namespace MarsRover.Tests.Vehicles
 {
@@ -38,6 +39,26 @@ namespace MarsRover.Tests.Vehicles
             Rover.MoveTo(expected);
             
             Assert.That(Rover.Coordinates, Is.EqualTo(expected));
+        }
+
+        [TestCaseSource(nameof(CardinalDirectionsAndExpectedDirectionTypeLeft))]
+        public void TurnLeft_GivenRoverFacingDirection_FacesRoverInDirectionToTheLeft(CardinalDirection cardinalDirection, Type expectedDirectionType)
+        {
+            GivenRoverFacingDirection(cardinalDirection);
+
+            Rover.TurnLeft();
+            
+            Assert.That(Rover.Direction, Is.TypeOf(expectedDirectionType));
+        }
+
+        [TestCaseSource(nameof(CardinalDirectionsAndExpectedDirectionTypeRight))]
+        public void TurnRight_GivenRoverFacingDirection_FacesRoverInDirectionToTheRight(CardinalDirection cardinalDirection, Type expectedDirectionType)
+        {
+            GivenRoverFacingDirection(cardinalDirection);
+
+            Rover.TurnRight();
+            
+            Assert.That(Rover.Direction, Is.TypeOf(expectedDirectionType));
         }
     }
 }

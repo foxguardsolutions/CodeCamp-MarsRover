@@ -64,12 +64,14 @@
     <Compile Include="Directions\SouthDirectionTests.cs" />
     <Compile Include="Directions\WestDirectionTests.cs" />
     <Compile Include="FixtureExtensions.cs" />
-    <Compile Include="TestsUsingGrid.cs" />
-    <Compile Include="TestsUsingRover.cs" />
+    <Compile Include="Grids\BoundariesTests.cs" />
     <Compile Include="Grids\CoordinatesTests.cs" />
-    <Compile Include="Grids\StandardGridTests.cs" />
+    <Compile Include="Grids\PlanetaryGridTests.cs" />
+    <Compile Include="Grids\PositionCalculatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests.cs" />
+    <Compile Include="TestsUsingGrid.cs" />
+    <Compile Include="TestsUsingRover.cs" />
     <Compile Include="Vehicles\Commands\MoveBackwardCommandTests.cs" />
     <Compile Include="Vehicles\Commands\MoveForwardCommandTests.cs" />
     <Compile Include="Vehicles\Commands\TurnLeftCommandTests.cs" />

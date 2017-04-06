@@ -60,8 +60,10 @@
     <Compile Include="Directions\SouthDirection.cs" />
     <Compile Include="Directions\WestDirection.cs" />
     <Compile Include="Grids\Coordinates.cs" />
+    <Compile Include="Grids\Boundaries.cs" />
     <Compile Include="Grids\IGrid.cs" />
-    <Compile Include="Grids\StandardGrid.cs" />
+    <Compile Include="Grids\PlanetaryGrid.cs" />
+    <Compile Include="Grids\PositionCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Vehicles\Commands\IRoverCommand.cs" />
     <Compile Include="Vehicles\Commands\MoveBackwardCommand.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="Vehicles\Commands\TurnRightCommand.cs" />
     <Compile Include="Vehicles\RoverInputProcessor.cs" />
     <Compile Include="Vehicles\Rover.cs" />
+    <Compile Include="UIntExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,5 +1,4 @@
 ﻿using MarsRover.Directions;
-using MarsRover.Grids;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -7,20 +6,12 @@ using System.Collections.Generic;
 namespace MarsRover.Tests.Directions
 {
     [TestFixture]
-    public class DirectionFactoryTests
+    public class DirectionFactoryTests : TestsUsingGrid
     {
-        private IGrid _grid;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _grid = new StandardGrid();
-        }
-
         [TestCaseSource(nameof(Directions))]
         public void GetDirection_GivenCardinalDirection_ReturnsExpectedDirection(CardinalDirection cardinalDirection, Type directionType)
         {
-            var actual = DirectionFactory.GetDirection(cardinalDirection, _grid);
+            var actual = DirectionFactory.GetDirection(cardinalDirection, Grid);
 
             Assert.That(actual, Is.TypeOf(directionType));
         }

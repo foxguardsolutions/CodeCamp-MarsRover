@@ -1,5 +1,6 @@
 ﻿using MarsRover.Grids;
 using NUnit.Framework;
+using Ploeh.AutoFixture;
 
 namespace MarsRover.Tests
 {
@@ -11,7 +12,7 @@ namespace MarsRover.Tests
         [SetUp]
         public new void SetUp()
         {
-            Grid = new StandardGrid();
+            Grid = Fixture.Create<PlanetaryGrid>();
         }
     }
 }

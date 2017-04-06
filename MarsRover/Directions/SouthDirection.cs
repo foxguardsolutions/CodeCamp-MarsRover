@@ -12,16 +12,16 @@ namespace MarsRover.Directions
             _grid = grid;
         }
 
-        public void MoveBackward(RoverPosition position)
+        public void MoveBackward(Rover rover)
         {
-            var newCoordinates = _grid.GetNextCoordinatesNorth(position.Coordinates);
-            position.Coordinates = newCoordinates;
+            var newCoordinates = _grid.GetNextCoordinatesNorth(rover.Coordinates);
+            rover.MoveTo(newCoordinates);
         }
 
-        public void MoveForward(RoverPosition position)
+        public void MoveForward(Rover rover)
         {
-            var newCoordinates = _grid.GetNextCoordinatesSouth(position.Coordinates);
-            position.Coordinates = newCoordinates;
+            var newCoordinates = _grid.GetNextCoordinatesSouth(rover.Coordinates);
+            rover.MoveTo(newCoordinates);
         }
     }
 }

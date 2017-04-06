@@ -59,16 +59,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Directions\DirectionFactoryTests.cs" />
-    <Compile Include="Directions\DirectionTests.cs" />
     <Compile Include="Directions\EastDirectionTests.cs" />
     <Compile Include="Directions\NorthDirectionTests.cs" />
     <Compile Include="Directions\SouthDirectionTests.cs" />
     <Compile Include="Directions\WestDirectionTests.cs" />
+    <Compile Include="FixtureExtensions.cs" />
+    <Compile Include="TestsUsingGrid.cs" />
+    <Compile Include="TestsUsingRover.cs" />
     <Compile Include="Grids\CoordinatesTests.cs" />
     <Compile Include="Grids\StandardGridTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests.cs" />
-    <Compile Include="Vehicles\RoverPositionTests.cs" />
+    <Compile Include="Vehicles\Commands\MoveBackwardCommandTests.cs" />
+    <Compile Include="Vehicles\Commands\MoveForwardCommandTests.cs" />
+    <Compile Include="Vehicles\RoverInputProcessorTests.cs" />
+    <Compile Include="Vehicles\RoverTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MarsRover\MarsRover.csproj">

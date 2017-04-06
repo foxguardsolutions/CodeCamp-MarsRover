@@ -4,7 +4,7 @@ namespace MarsRover.Directions
 {
     public interface IDirection
     {
-        void MoveBackward(RoverPosition position);
-        void MoveForward(RoverPosition position);
+        void MoveBackward(Rover rover);
+        void MoveForward(Rover rover);
     }
 }

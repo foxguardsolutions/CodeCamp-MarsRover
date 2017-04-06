@@ -62,7 +62,12 @@
     <Compile Include="Grids\IGrid.cs" />
     <Compile Include="Grids\StandardGrid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Vehicles\RoverPosition.cs" />
+    <Compile Include="Vehicles\Commands\IRoverCommand.cs" />
+    <Compile Include="Vehicles\Commands\MoveBackwardCommand.cs" />
+    <Compile Include="Vehicles\Commands\MoveForwardCommand.cs" />
+    <Compile Include="Vehicles\Commands\MovementCommand.cs" />
+    <Compile Include="Vehicles\RoverInputProcessor.cs" />
+    <Compile Include="Vehicles\Rover.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

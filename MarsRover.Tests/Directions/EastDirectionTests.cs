@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace MarsRover.Tests.Directions
 {
     [TestFixture]
-    public class EastDirectionTests : DirectionTests
+    public class EastDirectionTests : TestsUsingRover
     {
         private EastDirection _direction;
 
@@ -15,23 +15,23 @@ namespace MarsRover.Tests.Directions
         }
 
         [Test]
-        public void MoveBackward_GivenRandomPointOnGrid_MovesToWestPosition()
+        public void MoveBackward_GivenRover_MovesRoverWest()
         {
-            var expected = Grid.GetNextCoordinatesWest(Position.Coordinates);
+            var expected = Grid.GetNextCoordinatesWest(Rover.Coordinates);
 
-            _direction.MoveBackward(Position);
+            _direction.MoveBackward(Rover);
 
-            Assert.That(Position.Coordinates, Is.EqualTo(expected));
+            Assert.That(Rover.Coordinates, Is.EqualTo(expected));
         }
 
         [Test]
-        public void MoveForward_GivenRandomPointOnGrid_MovesToEastPosition()
+        public void MoveForward_GivenRover_MovesRoverEast()
         {
-            var expected = Grid.GetNextCoordinatesEast(Position.Coordinates);
+            var expected = Grid.GetNextCoordinatesEast(Rover.Coordinates);
 
-            _direction.MoveForward(Position);
+            _direction.MoveForward(Rover);
 
-            Assert.That(Position.Coordinates, Is.EqualTo(expected));
+            Assert.That(Rover.Coordinates, Is.EqualTo(expected));
         }
     }
 }

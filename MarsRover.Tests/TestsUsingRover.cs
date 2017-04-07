@@ -10,12 +10,16 @@ namespace MarsRover.Tests
     [TestFixture]
     public class TestsUsingRover : TestsUsingGrid
     {
+        protected List<Coordinates> Obstacles { get; set; }
+        protected Plane Plane { get; set; }
         protected Rover Rover { get; set; }
 
         [SetUp]
         public new void SetUp()
         {
-            Rover = Fixture.CreateRover(Grid);
+            Obstacles = new List<Coordinates>();
+            Plane = new Plane(Grid, Obstacles);
+            Rover = Fixture.CreateRover(Plane);
         }
 
         protected static IEnumerable<CardinalDirection> CardinalDirections()

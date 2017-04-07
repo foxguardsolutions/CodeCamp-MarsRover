@@ -21,8 +21,9 @@ namespace MarsRover.Vehicles
 
         private void ExecuteCommands(IEnumerable<IRoverCommand> roverCommands)
         {
-            foreach (var roverCommand in roverCommands)
-                roverCommand.Execute();
+            foreach (var command in roverCommands)
+                if (Rover.ObstacleEncountered == null)
+                    command.Execute();
         }
 
         private IRoverCommand InterpretCommand(MovementCommand command)

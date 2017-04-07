@@ -8,11 +8,11 @@ namespace MarsRover.Tests
 {
     public static class FixtureExtensions
     {
-        public static Rover CreateRover(this Fixture fixture, IGrid grid)
+        public static Rover CreateRover(this Fixture fixture, Plane plane)
         {
             var coordinates = fixture.Create<Coordinates>();
             var cardinalDirection = fixture.Create<CardinalDirection>();
-            return new Rover(coordinates, grid, cardinalDirection);
+            return new Rover(coordinates, plane, cardinalDirection);
         }
 
         public static uint CreateUIntInRange(this Fixture fixture, uint value1, uint value2)

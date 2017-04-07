@@ -24,6 +24,22 @@ namespace MarsRover.Tests.Vehicles
             _roverInputProcessor = new RoverInputProcessor(Rover);
         }
 
+        [TestCaseSource(nameof(CardinalDirection))]
+        public void ExecuteCommands_GivenCommandsIntoObstacle_ExecuteCommandsUntilObstacleEncounteredAndIgnoresRemainingCommands(CardinalDirection cardinalDirection)
+        {
+            GivenRoverFacingDirectionWithObstacleNSpacesInFrontOfRover(cardinalDirection, _count);
+            var expectedRoverCoordinates = GetCoordinatesNSpacesInDirection(Grid, Rover.Coordinates, cardinalDirection, _count - 1);
+            var expectedDirectionType = Rover.Direction.GetType();
+            var expectedObstacleCoordinates = GetNextCoordinatesInDirection(Grid, expectedRoverCoordinates, cardinalDirection);
+            _commands = _commands.Concat(Fixture.CreateMany<MovementCommand>(10));
+            
+            _roverInputProcessor.ExecuteCommands(_commands);
+            
+            Assert.That(Rover.Coordinates, Is.EqualTo(expectedRoverCoordinates));
+            Assert.That(Rover.Direction, Is.TypeOf(expectedDirectionType));
+            Assert.That(Rover.ObstacleEncountered, Is.EqualTo(expectedObstacleCoordinates));
+        }
+
         [TestCaseSource(nameof(CardinalDirections))]
         public void ExecuteCommands_GivenTurnLeftNTimes_TurnsRoverLeftNTimes(CardinalDirection cardinalDirection)
         {
@@ -107,6 +123,15 @@ namespace MarsRover.Tests.Vehicles
         {
             GivenRoverFacingDirection(cardinalDirection);
             _commands = Enumerable.Range(0, count).Select(c => command);
+        }
+
+        private void GivenRoverFacingDirectionWithObstacleNSpacesInFrontOfRover(CardinalDirection cardinalDirection,
+            int count)
+        {
+            GivenRoverFacingDirection(cardinalDirection);
+            var obstacleCoordinates = GetCoordinatesNSpacesInDirection(Grid, Rover.Coordinates, cardinalDirection, count);
+            Obstacles.Add(obstacleCoordinates);
+            _commands = Enumerable.Range(0, count).Select(c => MovementCommand.Forward);
         }
     }
 }

@@ -59,9 +59,10 @@
     <Compile Include="Directions\NorthDirection.cs" />
     <Compile Include="Directions\SouthDirection.cs" />
     <Compile Include="Directions\WestDirection.cs" />
-    <Compile Include="Grids\Coordinates.cs" />
     <Compile Include="Grids\Boundaries.cs" />
+    <Compile Include="Grids\Coordinates.cs" />
     <Compile Include="Grids\IGrid.cs" />
+    <Compile Include="Grids\Plane.cs" />
     <Compile Include="Grids\PlanetaryGrid.cs" />
     <Compile Include="Grids\PositionCalculator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

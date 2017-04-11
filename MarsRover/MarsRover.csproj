@@ -51,10 +51,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Directions\CardinalDirection.cs" />
+    <Compile Include="Directions\IDirection.cs" />
+    <Compile Include="Directions\DirectionFactory.cs" />
+    <Compile Include="Directions\EastDirection.cs" />
+    <Compile Include="Directions\NorthDirection.cs" />
+    <Compile Include="Directions\SouthDirection.cs" />
+    <Compile Include="Directions\WestDirection.cs" />
     <Compile Include="Grids\Coordinates.cs" />
     <Compile Include="Grids\IGrid.cs" />
     <Compile Include="Grids\StandardGrid.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Vehicles\RoverPosition.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
